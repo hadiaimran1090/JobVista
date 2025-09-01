@@ -96,7 +96,7 @@ const FindJobs: React.FC = () => {
             </Box>
           </Box>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-            <MenuItem onClick={handleClose}>View Profile</MenuItem>
+            <MenuItem onClick={() => { handleClose(); navigate('/profile'); }}>View Profile</MenuItem>
             <MenuItem onClick={handleFeedback}>Feedback</MenuItem>
             <MenuItem onClick={handleLogout} sx={{ color: 'red' }}>Logout</MenuItem>
           </Menu>
