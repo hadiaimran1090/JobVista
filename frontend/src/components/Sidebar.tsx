@@ -19,7 +19,7 @@ const Sidebar: React.FC = () => (
     minHeight: '100vh',
     zIndex: 100,
   }}>
-    <Typography variant="h5" sx={{ fontWeight: 700, color: '#fff', letterSpacing: 1, mb: 5 }}>JobPortal</Typography>
+    <Typography variant="h5" sx={{ fontWeight: 700, color: '#fff', letterSpacing: 1, mb: 5 }}>JobVista</Typography>
     <Stack spacing={2} sx={{ width: '100%' }}>
       <Button variant="contained" sx={{ bgcolor: '#2563eb', color: '#fff', boxShadow: 2, fontWeight: 600 }}>DASHBOARD</Button>
       <Button variant="text" sx={{ color: '#fff', fontWeight: 500 }}>POST JOB</Button>
