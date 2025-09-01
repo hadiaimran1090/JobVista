@@ -25,7 +25,9 @@ const LandingPage: React.FC = () => {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button variant="text">Find Jobs</Button>
           <Button variant="text">Post Jobs</Button>
-          <Button variant="outlined">Login</Button>
+          <Link href="/auth">
+            <Button variant="outlined">Login</Button>
+          </Link>
         </Box>
       </Box>
 
@@ -38,7 +40,9 @@ const LandingPage: React.FC = () => {
           <Typography variant="body1" sx={{ mb: 3, color: '#64748b' }}>
             Find the best jobs to match your skills. Join top companies & grow your career.
           </Typography>
-          <Button variant="contained" size="large" sx={{ mb: 3 }}>Get Started</Button>
+          <Link href="/auth">
+            <Button variant="contained" size="large" sx={{ mb: 3 }}>Get Started</Button>
+          </Link>
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             {companies.map((c) => (
               <Chip key={c.name} label={c.name} sx={{ bgcolor: c.color, color: '#fff', fontWeight: 500 }} />
@@ -62,6 +66,23 @@ const LandingPage: React.FC = () => {
         </TextField>
         <TextField label="City" defaultValue="lahore" sx={{ flex: 1 }} />
         <Button variant="contained" sx={{ px: 4 }}>Search</Button>
+      </Box>
+
+      {/* Featured Jobs (Moved here, just below search bar) */}
+      <Box sx={{ px: 4, py: 6, textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>Find The Job That Qualify Your Life</Typography>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} justifyContent="center" alignItems="stretch">
+          {jobs.map((job, idx) => (
+            <Card key={idx} sx={{ py: 2, flex: 1 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>{job.title}</Typography>
+                <Typography variant="body2" color="text.secondary">{job.company} - {job.location}</Typography>
+                <Chip label={job.type} sx={{ mt: 1 }} />
+              </CardContent>
+            </Card>
+          ))}
+        </Stack>
+        <Typography variant="h6" sx={{ mt: 4, color: '#38bdf8', fontWeight: 700 }}>100K+ Jobs</Typography>
       </Box>
 
       {/* How it Works */}
@@ -109,23 +130,6 @@ const LandingPage: React.FC = () => {
             <Typography variant="body2">Successful placements</Typography>
           </Box>
         </Stack>
-      </Box>
-
-      {/* Featured Jobs */}
-      <Box sx={{ px: 4, py: 6, textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>Find The Job That Qualify Your Life</Typography>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} justifyContent="center" alignItems="stretch">
-          {jobs.map((job, idx) => (
-            <Card key={idx} sx={{ py: 2, flex: 1 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>{job.title}</Typography>
-                <Typography variant="body2" color="text.secondary">{job.company} - {job.location}</Typography>
-                <Chip label={job.type} sx={{ mt: 1 }} />
-              </CardContent>
-            </Card>
-          ))}
-        </Stack>
-        <Typography variant="h6" sx={{ mt: 4, color: '#38bdf8', fontWeight: 700 }}>100K+ Jobs</Typography>
       </Box>
 
       {/* Client Testimonials */}

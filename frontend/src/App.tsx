@@ -1,22 +1,30 @@
 import React from 'react';
-import { Switch, Route } from 'wouter';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import Dashboard from './pages/employer/Dashboard';
+import AuthPage from './pages/AuthPage';
+import EmployerDashboard from './pages/employer/Dashboard';
 import FindJobs from './pages/FindJobs';
+import Feedback from './pages/Feedback'; //
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={LandingPage} />
-      <Route path="/employer/dashboard" component={Dashboard} />
-      <Route path="/find-jobs" component={FindJobs} />
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+      <Route path="/find-jobs" element={<FindJobs />} />
+      <Route path="/feedback" element={<Feedback />} />
       {/* Add more routes here as needed */}
-    </Switch>
+    </Routes>
   );
 }
 
 function App() {
-  return <Router />;
+  return (
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
+  );
 }
 
 export default App;

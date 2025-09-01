@@ -21,6 +21,12 @@ const applications = [
 ];
 
 const Dashboard: React.FC = () => {
+  // Get user info from localStorage
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userName = user.name || 'User';
+  const userImage = user.profileImage || 'https://randomuser.me/api/portraits/men/32.jpg';
+  const userRole = user.role || 'Guest';
+
   return (
     <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', fontFamily: 'sans-serif', display: 'flex', overflow: 'hidden', width: '100vw' }}>
       <Sidebar />
@@ -28,9 +34,14 @@ const Dashboard: React.FC = () => {
         {/* Navbar */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 4, py: 2, bgcolor: '#fff', boxShadow: 1, width: '100%' }}>
           <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '1.3rem' }}>Welcome back!</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar alt="John Davis" src="https://randomuser.me/api/portraits/men/32.jpg" sx={{ width: 32, height: 32 }} />
-            <Typography variant="body2" sx={{ color: '#1e293b', fontWeight: 600, fontSize: '1rem' }}>John Davis</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Avatar alt={userName} src={userImage} sx={{ width: 32, height: 32 }} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <Typography variant="body2" sx={{ color: '#1e293b', fontWeight: 600, fontSize: '1rem' }}>{userName}</Typography>
+              <Typography variant="caption" sx={{ color: '#64748b', fontSize: 12 }}>
+                {userRole.charAt(0).toUpperCase() + userRole.slice(1)}
+              </Typography>
+            </Box>
           </Box>
         </Box>
         <Typography variant="body2" sx={{ px: 4, mb: 3, color: '#64748b', fontSize: '0.95rem' }}>Here's what's happening with your jobs today.</Typography>
