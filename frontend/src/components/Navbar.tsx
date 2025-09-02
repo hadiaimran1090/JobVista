@@ -1,8 +1,7 @@
 import React from 'react';
 import { Box, Typography, Avatar } from '@mui/material';
 
-const SIDEBAR_WIDTH = 220; // Apne sidebar ki actual width yahan set karein
-
+const SIDEBAR_WIDTH = 220; 
 const Navbar: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const userName = user.name || 'User';

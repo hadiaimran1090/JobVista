@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, MenuItem, Typography, Stack } from '@mui/material';
+import { Box, TextField, Button, MenuItem, Typography, Stack, Snackbar, Alert } from '@mui/material';
 import Sidebar from '../../components/Sidebar';
 import axios from 'axios';
 
@@ -22,6 +22,8 @@ const PostJob: React.FC = () => {
     salary_min: '',
     salary_max: '',
   });
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupError, setPopupError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -31,7 +33,7 @@ const PostJob: React.FC = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.post(
+      await axios.post(
         'http://localhost:5000/api/jobs/post-job',
         form,
         {
@@ -40,22 +42,28 @@ const PostJob: React.FC = () => {
           },
         }
       );
-      alert('Job posted!');
+      setPopupError('');
+      setPopupOpen(true);
     } catch (error: any) {
-      alert('Error posting job: ' + (error.response ? error.response.data.message : error.message));
+      setPopupError(error.response ? error.response.data.message : error.message);
+      setPopupOpen(true);
     }
   };
 
+  const SIDEBAR_WIDTH = 220; 
   return (
-    <Box sx={{ display: 'flex', bgcolor: '#f6fbff', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#e9f0f5ff' }}>
       <Sidebar />
       <Box
         sx={{
-          width: 'calc(100vw - 220px)', // Sidebar ki width minus karen
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          width: `calc(100vw - ${SIDEBAR_WIDTH}px)`,
+          marginLeft: `${SIDEBAR_WIDTH}px`,
           minHeight: '100vh',
+          bgcolor: '#e9f0f5ff',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          p: 3,
         }}
       >
         <Box
@@ -63,12 +71,11 @@ const PostJob: React.FC = () => {
           onSubmit={handleSubmit}
           sx={{
             bgcolor: '#fff',
-            p: 2,
+            p: 3,
             borderRadius: 2,
             boxShadow: 2,
-            width: 350,
-            minWidth: 280,
-            maxWidth: 400,
+            width: '100%',
+            maxWidth: 600,
           }}
         >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, textAlign: 'center' }}>
@@ -171,6 +178,21 @@ const PostJob: React.FC = () => {
             </Button>
           </Stack>
         </Box>
+        {/* Popup Snackbar */}
+        <Snackbar
+          open={popupOpen}
+          autoHideDuration={3000}
+          onClose={() => setPopupOpen(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert
+            onClose={() => setPopupOpen(false)}
+            severity={popupError ? 'error' : 'success'}
+            sx={{ width: '100%', fontSize: 16 }}
+          >
+            {popupError ? `Error: ${popupError}` : '🎉 Job posted successfully!'}
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );
