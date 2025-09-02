@@ -7,18 +7,23 @@ import FindJobs from './pages/FindJobs';
 import Feedback from './pages/Feedback'; 
 import Profile from './pages/Profile';
 import PostJob from './pages/employer/PostJob';
+import EmployerLayout from './components/EmployerLayout';
 
 function Router() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/employer/dashboard" element={<EmployerDashboard />} />
-      <Route path="/find-jobs" element={<FindJobs />} />
-      <Route path="/feedback" element={<Feedback />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/post-job" element={<PostJob />} />
-      {/* Add more routes here as needed */}
+      {/* Employer pages */}
+      <Route element={<EmployerLayout><EmployerDashboard /></EmployerLayout>} path="/employer/dashboard" />
+      <Route element={<EmployerLayout><PostJob /></EmployerLayout>} path="/post-job" />
+      {/* Add other employer pages here in EmployerLayout */}
+
+      {/* Jobseeker and other pages (no sidebar/navbar) */}
+      <Route element={<LandingPage />} path="/" />
+      <Route element={<AuthPage />} path="/auth" />
+      <Route element={<FindJobs />} path="/find-jobs" />
+      <Route element={<Feedback />} path="/feedback" />
+      <Route element={<Profile />} path="/profile" />
+      {/* Add more routes as needed */}
     </Routes>
   );
 }
