@@ -10,6 +10,7 @@ import PostJob from './pages/employer/PostJob';
 import EmployerLayout from './components/EmployerLayout';
 import JobDetail from './pages/JobDetail';
 import SavedJobs from './pages/SavedJobs';
+import JobManagement from './pages/employer/JobManagement';
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       {/* Employer pages */}
       <Route element={<EmployerLayout><EmployerDashboard /></EmployerLayout>} path="/employer/dashboard" />
       <Route element={<EmployerLayout><PostJob /></EmployerLayout>} path="/post-job" />
+      <Route element={<EmployerLayout><JobManagement /></EmployerLayout>} path="/manage-jobs" />
       {/* Add other employer pages here in EmployerLayout */}
 
       {/* Jobseeker and other pages (no sidebar/navbar) */}

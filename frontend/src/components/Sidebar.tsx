@@ -38,7 +38,13 @@ const Sidebar: React.FC = () => {
         >
           POST JOB
         </Button>
-        <Button variant="text" sx={{ color: '#fff', fontWeight: 500 }}>MANAGE JOBS</Button>
+        <Button
+          variant="text"
+          sx={{ color: '#fff', fontWeight: 500 }}
+          onClick={() => navigate('/manage-jobs')}
+        >
+          MANAGE JOBS
+        </Button>
         <Button variant="text" sx={{ color: '#fff', fontWeight: 500 }}>COMPANY PROFILE</Button>
       </Stack>
       <Divider sx={{ my: 4, bgcolor: '#fff', width: '80%' }} />

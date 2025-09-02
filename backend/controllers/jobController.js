@@ -76,3 +76,23 @@ exports.unsaveJob = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+// Update job
+exports.updateJob = async (req, res) => {
+  try {
+    const job = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(job);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+// Delete job
+exports.deleteJob = async (req, res) => {
+  try {
+    await Job.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};

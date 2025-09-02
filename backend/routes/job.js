@@ -21,4 +21,10 @@ router.post('/:id/save', auth, jobController.saveJob);
 // Unsave job
 router.post('/:id/unsave', auth, jobController.unsaveJob);
 
+// Update job
+router.put('/:id', auth, jobController.updateJob);
+
+// Delete job
+router.delete('/:id', auth, jobController.deleteJob);
+
 module.exports = router;
