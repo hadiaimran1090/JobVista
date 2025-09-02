@@ -18,4 +18,7 @@ router.post('/:id/apply', auth, jobController.applyJob);
 // Save job
 router.post('/:id/save', auth, jobController.saveJob);
 
+// Unsave job
+router.post('/:id/unsave', auth, jobController.unsaveJob);
+
 module.exports = router;

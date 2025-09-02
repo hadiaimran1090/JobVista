@@ -63,3 +63,16 @@ exports.saveJob = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+// Unsave job
+exports.unsaveJob = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job.savedBy) job.savedBy = [];
+    job.savedBy = job.savedBy.filter(uid => String(uid) !== String(req.user.id));
+    await job.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};

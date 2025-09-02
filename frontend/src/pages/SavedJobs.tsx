@@ -8,20 +8,29 @@ const SavedJobs: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const navigate = useNavigate();
   const userId = String(localStorage.getItem('userId') || '');
+  const token = localStorage.getItem('token');
+
+  const fetchJobs = async () => {
+    const res = await axios.get('http://localhost:5000/api/jobs');
+    const saved = res.data.filter((j: any) => Array.isArray(j.savedBy) && j.savedBy.includes(userId));
+    setJobs(saved);
+  };
 
   useEffect(() => {
-    const fetchJobs = async () => {
-      const res = await axios.get('http://localhost:5000/api/jobs');
-      console.log('All jobs:', res.data); // Debug: All jobs from API
-      const saved = res.data.filter((j: any) => {
-        console.log('Checking job:', j.title, 'savedBy:', j.savedBy, 'userId:', userId);
-        return Array.isArray(j.savedBy) && j.savedBy.includes(userId);
-      });
-      console.log('Filtered saved jobs:', saved); // Debug: Filtered jobs
-      setJobs(saved);
-    };
     fetchJobs();
   }, []);
+
+  // Unsave job handler
+  const handleUnsaveJob = async (jobId: string) => {
+    try {
+      await axios.post(`http://localhost:5000/api/jobs/${jobId}/unsave`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setJobs(jobs.filter(job => job._id !== jobId));
+    } catch (err) {
+      alert('Error unsaving job');
+    }
+  };
 
   return (
     <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', width: '100vw', maxWidth: '100vw', p: 3 }}>
@@ -59,8 +68,16 @@ const SavedJobs: React.FC = () => {
                   {job?.company_name || ''}
                 </Typography>
               </Box>
-              <IconButton sx={{ ml: 'auto' }}>
-                <BookmarkIcon sx={{ color: '#2563eb' }} />
+              <IconButton
+                sx={{ ml: 'auto' }}
+                onClick={e => { e.stopPropagation(); handleUnsaveJob(job._id); }}
+              >
+                <BookmarkIcon sx={{
+                  color: '#fff',
+                  border: '1px solid #2563eb',
+                  borderRadius: '4px',
+                  bgcolor: '#2563eb'
+                }} />
               </IconButton>
             </Box>
             <Stack direction="row" spacing={0.7} sx={{ mb: 1 }}>

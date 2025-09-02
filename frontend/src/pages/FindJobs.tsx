@@ -48,16 +48,24 @@ const FindJobs: React.FC = () => {
     }
   }, [locationHook, appliedJobs]);
 
-  // Save job handler
-  const handleSaveJob = async (jobId: string) => {
+  // Save/Unsave job handler
+  const handleToggleSaveJob = async (jobId: string) => {
     try {
-      await axios.post(`http://localhost:5000/api/jobs/${jobId}/save`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setSavedJobs([...savedJobs, jobId]);
-      // Optionally, fetchJobs(); // To refresh jobs from backend
+      if (savedJobs.includes(jobId)) {
+        // Unsave
+        await axios.post(`http://localhost:5000/api/jobs/${jobId}/unsave`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setSavedJobs(savedJobs.filter(id => id !== jobId));
+      } else {
+        // Save
+        await axios.post(`http://localhost:5000/api/jobs/${jobId}/save`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setSavedJobs([...savedJobs, jobId]);
+      }
     } catch (err) {
-      alert('Error saving job');
+      alert('Error updating saved job');
     }
   };
 
@@ -169,9 +177,14 @@ const FindJobs: React.FC = () => {
                   {/* Saved Icon */}
                   <IconButton
                     sx={{ ml: 'auto' }}
-                    onClick={e => { e.stopPropagation(); handleSaveJob(job._id); }}
+                    onClick={e => { e.stopPropagation(); handleToggleSaveJob(job._id); }}
                   >
-                    <BookmarkIcon sx={{ color: savedJobs.includes(job._id) ? '#2563eb' : '#fff', border: '1px solid #2563eb', borderRadius: '4px', bgcolor: savedJobs.includes(job._id) ? '#e3f0ff' : '#2563eb' }} />
+                    <BookmarkIcon sx={{
+                      color: savedJobs.includes(job._id) ? '#2563eb' : '#fff',
+                      border: '1px solid #2563eb',
+                      borderRadius: '4px',
+                      bgcolor: savedJobs.includes(job._id) ? '#e3f0ff' : '#2563eb'
+                    }} />
                   </IconButton>
                 </Box>
                 <Stack direction="row" spacing={0.7} sx={{ mb: 1 }}>
