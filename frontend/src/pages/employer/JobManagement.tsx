@@ -179,10 +179,11 @@ const JobManagement: React.FC = () => {
                       />
                     )}
                   </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <PeopleAltIcon sx={{ fontSize: 18, color: '#2563eb' }} />
-                    <Typography sx={{ fontWeight: 600, fontSize: 15 }}>{job.applicants?.length || 0}</Typography>
-                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer' }}
+  onClick={() => navigate(`/job/${job._id}/applicants`)}>
+  <PeopleAltIcon sx={{ fontSize: 18, color: '#2563eb' }} />
+  <Typography sx={{ fontWeight: 600, fontSize: 15 }}>{job.applicants?.length || 0}</Typography>
+</Box>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <IconButton size="small" onClick={() => handleEditJob(job._id)}>
                       <EditIcon sx={{ fontSize: 18 }} />

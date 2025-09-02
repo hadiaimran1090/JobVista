@@ -51,7 +51,7 @@ const Usernavbar: React.FC = () => {
             <BookmarkIcon sx={{ color: '#2563eb' }} />
           </IconButton>
         </Link>
-        <IconButton>
+        <IconButton onClick={() => navigate('/messages')}>
           <MessageIcon sx={{ color: '#2563eb' }} />
         </IconButton>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

@@ -5,6 +5,8 @@ const authController = require('../controllers/authController');
 const cloudinary = require('../config/cloudinary');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
+const userController = require('../controllers/userController');
+const auth = require('../middleware/auth');
 
 // Cloudinary storage setup
 const storage = new CloudinaryStorage({
@@ -66,5 +68,8 @@ router.put(
     }
   }
 );
+
+// Bulk user retrieval route
+router.post('/users/bulk', auth, userController.getUsersBulk);
 
 module.exports = router;

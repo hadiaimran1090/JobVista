@@ -11,6 +11,9 @@ import EmployerLayout from './components/EmployerLayout';
 import JobDetail from './pages/JobDetail';
 import SavedJobs from './pages/SavedJobs';
 import JobManagement from './pages/employer/JobManagement';
+import ApplicationsOverview from './pages/employer/ApplicationsOverview';
+import Messages from './pages/Messages';
+import ProfileView from './pages/ProfileView';
 
 function Router() {
   return (
@@ -19,7 +22,7 @@ function Router() {
       <Route element={<EmployerLayout><EmployerDashboard /></EmployerLayout>} path="/employer/dashboard" />
       <Route element={<EmployerLayout><PostJob /></EmployerLayout>} path="/post-job" />
       <Route element={<EmployerLayout><JobManagement /></EmployerLayout>} path="/manage-jobs" />
-      {/* Add other employer pages here in EmployerLayout */}
+      <Route element={<EmployerLayout><ApplicationsOverview /></EmployerLayout>} path="/job/:jobId/applicants" />
 
       {/* Jobseeker and other pages (no sidebar/navbar) */}
       <Route element={<LandingPage />} path="/" />
@@ -29,6 +32,8 @@ function Router() {
       <Route path="/saved-jobs" element={<SavedJobs />} />
       <Route element={<Feedback />} path="/feedback" />
       <Route element={<Profile />} path="/profile" />
+      <Route path="/messages" element={<Messages />} />
+      <Route path="/profile-view/:id" element={<ProfileView />} />
       {/* Add more routes as needed */}
     </Routes>
   );
