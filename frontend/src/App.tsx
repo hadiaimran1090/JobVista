@@ -8,6 +8,8 @@ import Feedback from './pages/Feedback';
 import Profile from './pages/Profile';
 import PostJob from './pages/employer/PostJob';
 import EmployerLayout from './components/EmployerLayout';
+import JobDetail from './pages/JobDetail';
+import SavedJobs from './pages/SavedJobs';
 
 function Router() {
   return (
@@ -20,7 +22,9 @@ function Router() {
       {/* Jobseeker and other pages (no sidebar/navbar) */}
       <Route element={<LandingPage />} path="/" />
       <Route element={<AuthPage />} path="/auth" />
-      <Route element={<FindJobs />} path="/find-jobs" />
+      <Route path="/find-jobs" element={<FindJobs />} />
+      <Route path="/job/:id" element={<JobDetail />} />
+      <Route path="/saved-jobs" element={<SavedJobs />} />
       <Route element={<Feedback />} path="/feedback" />
       <Route element={<Profile />} path="/profile" />
       {/* Add more routes as needed */}

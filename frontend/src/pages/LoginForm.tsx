@@ -16,6 +16,7 @@ const LoginForm: React.FC = () => {
       localStorage.setItem('user', JSON.stringify(res.data.user));
       localStorage.setItem('token', res.data.token); // Store the token
       const user = res.data.user;
+      localStorage.setItem('userId', user._id); // user._id backend se milta hai
       setSnack({ open: true, message: 'Login successful!', severity: 'success' });
       setTimeout(() => {
         if (user.role === 'employer') navigate('/employer/dashboard');

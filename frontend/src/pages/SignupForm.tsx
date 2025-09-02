@@ -31,10 +31,11 @@ const SignupForm: React.FC = () => {
       const res = await axios.post('http://localhost:5000/api/auth/signup', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const user = res.data.user;
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userId', user._id); // user._id backend se milta hai
       setSnack({ open: true, message: 'User registered successfully!', severity: 'success' });
       setTimeout(() => {
-        const user = res.data.user;
         if (user.role === 'employer') navigate('/employer/dashboard');
         else navigate('/find-jobs');
       }, 1200);
