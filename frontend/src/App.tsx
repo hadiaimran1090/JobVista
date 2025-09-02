@@ -23,7 +23,7 @@ function Router() {
       <Route element={<EmployerLayout><PostJob /></EmployerLayout>} path="/post-job" />
       <Route element={<EmployerLayout><JobManagement /></EmployerLayout>} path="/manage-jobs" />
       <Route element={<EmployerLayout><ApplicationsOverview /></EmployerLayout>} path="/job/:jobId/applicants" />
-
+      <Route path="/profile-view/:id" element={<ProfileView />} />
       {/* Jobseeker and other pages (no sidebar/navbar) */}
       <Route element={<LandingPage />} path="/" />
       <Route element={<AuthPage />} path="/auth" />
@@ -33,7 +33,6 @@ function Router() {
       <Route element={<Feedback />} path="/feedback" />
       <Route element={<Profile />} path="/profile" />
       <Route path="/messages" element={<Messages />} />
-      <Route path="/profile-view/:id" element={<ProfileView />} />
       {/* Add more routes as needed */}
     </Routes>
   );

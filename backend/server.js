@@ -29,6 +29,10 @@ app.use('/api/jobs', jobRoutes);
 const userRoutes = require('./routes/user');
 app.use('/api/users', userRoutes);
 
+// Applicant routes
+const applicantRoutes = require('./routes/applicant.routes');
+app.use('/api/applicants', applicantRoutes);
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });

@@ -34,37 +34,16 @@ const ApplicationsOverview: React.FC = () => {
     setRejectedApplicants(res.data.rejectedApplicants || []);
   };
 
-  // Select applicant handler
-  const handleSelect = async (applicantId: string) => {
+  // Status update handler
+  const handleStatusUpdate = async (applicantId: string, status: 'selected' | 'rejected') => {
     await axios.post(
-      `http://localhost:5000/api/messages/send`,
-      {
-        to: applicantId,
-        jobId,
-        message: 'Congratulations! You have been selected for interview. Please be available tomorrow.'
-      },
+      'http://localhost:5000/api/applicants/update-status',
+      { userId: applicantId, jobId, status },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    // Update selectedApplicants in backend (optional, if you want to persist)
-    await axios.put(
-      `http://localhost:5000/api/jobs/${jobId}`,
-      { selectedApplicants: [...selectedApplicants, applicantId] },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setSelectedApplicants(prev => [...prev, applicantId]);
-    alert('Applicant selected and message sent!');
-  };
-
-  // Reject applicant handler
-  const handleReject = async (applicantId: string) => {
-    // Update rejectedApplicants in backend (optional, if you want to persist)
-    await axios.put(
-      `http://localhost:5000/api/jobs/${jobId}`,
-      { rejectedApplicants: [...rejectedApplicants, applicantId] },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setRejectedApplicants(prev => [...prev, applicantId]);
-    alert('Applicant rejected.');
+    // Update local state accordingly
+    if (status === 'selected') setSelectedApplicants(prev => [...prev, applicantId]);
+    if (status === 'rejected') setRejectedApplicants(prev => [...prev, applicantId]);
   };
 
   return (
@@ -109,7 +88,7 @@ const ApplicationsOverview: React.FC = () => {
                     color: '#fff'
                   }}
                   disabled={selectedApplicants.includes(applicant._id)}
-                  onClick={() => handleSelect(applicant._id)}
+                  onClick={() => handleStatusUpdate(applicant._id, 'selected')}
                 >
                   {selectedApplicants.includes(applicant._id) ? 'Selected' : 'Select'}
                 </Button>
@@ -121,7 +100,7 @@ const ApplicationsOverview: React.FC = () => {
                     borderColor: '#e41b17'
                   }}
                   disabled={rejectedApplicants.includes(applicant._id)}
-                  onClick={() => handleReject(applicant._id)}
+                  onClick={() => handleStatusUpdate(applicant._id, 'rejected')}
                 >
                   {rejectedApplicants.includes(applicant._id) ? 'Rejected' : 'Reject'}
                 </Button>

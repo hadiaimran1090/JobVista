@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Typography, Avatar, TextField, Button, Chip, Stack } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Avatar, TextField, Button, Chip, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import axios from 'axios';
 import Swal from 'sweetalert2';   // 👈 added
 
@@ -18,6 +18,20 @@ const Profile: React.FC = () => {
     newProfileImage: null as File | null,
     newResume: null as File | null,
   });
+  const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Fetch applied jobs for user
+    const fetchAppliedJobs = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/applicants/user/${user._id}`);
+        setAppliedJobs(res.data); // [{job: {...}, status: 'accepted'|'rejected'|'pending'}]
+      } catch (err) {
+        setAppliedJobs([]);
+      }
+    };
+    if (user._id) fetchAppliedJobs();
+  }, [user._id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -81,85 +95,175 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <Box sx={{
-      maxWidth: 320,
-      minWidth: 260,
-      width: 320,
-      height: '100vh',
-      bgcolor: '#fff',
-      p: 3,
-      borderRadius: 3,
-      boxShadow: 3,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      position: 'fixed',
-      left: 0,
-      top: 0,
-      zIndex: 100,
-    }}>
-      <Avatar src={form.profileImage} sx={{ width: 80, height: 80, mb: 2 }} />
-      {edit ? (
-        <TextField name="name" value={form.name} onChange={handleChange} label="Name" size="small" sx={{ mb: 1, width: '100%' }} />
-      ) : (
-        <Typography variant="h6" sx={{ mb: 1 }}>{form.name}</Typography>
-      )}
-      <Stack spacing={1} sx={{ width: '100%' }}>
+    <Box sx={{ display: 'flex' }}>
+      {/* Left: Profile Info */}
+      <Box sx={{
+        maxWidth: 320,
+        minWidth: 260,
+        width: 320,
+        height: '100vh',
+        bgcolor: '#fff',
+        p: 3,
+        borderRadius: 3,
+        boxShadow: 3,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        zIndex: 100,
+      }}>
+        <Avatar src={form.profileImage} sx={{ width: 80, height: 80, mb: 2 }} />
         {edit ? (
-          <>
-            <TextField name="email" value={form.email} onChange={handleChange} label="Email" size="small" />
-            <TextField name="phone" value={form.phone} onChange={handleChange} label="Phone" size="small" />
-            <TextField name="bio" value={form.bio} onChange={handleChange} label="Bio" size="small" multiline />
-            <TextField name="experience" value={form.experience} onChange={handleChange} label="Experience" size="small" />
-            <TextField
-              name="skills"
-              value={form.skills.join(', ')}
-              onChange={e => setForm({ ...form, skills: e.target.value.split(',').map(s => s.trim()) })}
-              label="Skills (comma separated)"
-              size="small"
-            />
-            <Button variant="outlined" component="label" sx={{ mt: 1, width: '100%' }}>
-              Upload New Profile Image
-              <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
-            </Button>
-            {form.newProfileImage && (
-              <Typography variant="caption" sx={{ ml: 1 }}>{form.newProfileImage.name}</Typography>
-            )}
-            <Button variant="outlined" component="label" sx={{ mt: 1, width: '100%' }}>
-              Upload New Resume
-              <input type="file" hidden accept=".pdf,.doc,.docx" onChange={handleResumeUpload} />
-            </Button>
-            {form.newResume && (
-              <Typography variant="caption" sx={{ ml: 1 }}>{form.newResume.name}</Typography>
-            )}
-          </>
+          <TextField name="name" value={form.name} onChange={handleChange} label="Name" size="small" sx={{ mb: 1, width: '100%' }} />
         ) : (
-          <>
-            <Typography variant="body2"><b>Email:</b> {form.email}</Typography>
-            <Typography variant="body2"><b>Phone:</b> {form.phone}</Typography>
-            <Typography variant="body2"><b>Resume:</b> {form.resume ? (
-              <a href={form.resume} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb' }}>View Resume</a>
-            ) : (
-              <span style={{ color: '#64748b' }}>Not uploaded</span>
-            )}</Typography>
-            <Typography variant="body2"><b>Bio:</b> {form.bio}</Typography>
-            <Typography variant="body2"><b>Experience:</b> {form.experience}</Typography>
-            <Box>
-              <Typography variant="body2"><b>Skills:</b></Typography>
-              <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
-                {form.skills.map((skill: string, idx: number) => (
-                  <Chip key={idx} label={skill} sx={{ mb: 0.5 }} />
-                ))}
-              </Stack>
-            </Box>
-          </>
+          <Typography variant="h6" sx={{ mb: 1 }}>{form.name}</Typography>
         )}
-      </Stack>
-      <Box sx={{ mt: 3, width: '100%' }}>
-        {edit ? (
-          <Button variant="contained" onClick={handleSave} sx={{ width: '100%' }}>Save</Button>
+        <Stack spacing={1} sx={{ width: '100%' }}>
+          {edit ? (
+            <>
+              <TextField name="email" value={form.email} onChange={handleChange} label="Email" size="small" />
+              <TextField name="phone" value={form.phone} onChange={handleChange} label="Phone" size="small" />
+              <TextField name="bio" value={form.bio} onChange={handleChange} label="Bio" size="small" multiline />
+              <TextField name="experience" value={form.experience} onChange={handleChange} label="Experience" size="small" />
+              <TextField
+                name="skills"
+                value={form.skills.join(', ')}
+                onChange={e => setForm({ ...form, skills: e.target.value.split(',').map(s => s.trim()) })}
+                label="Skills (comma separated)"
+                size="small"
+              />
+              <Button variant="outlined" component="label" sx={{ mt: 1, width: '100%' }}>
+                Upload New Profile Image
+                <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
+              </Button>
+              {form.newProfileImage && (
+                <Typography variant="caption" sx={{ ml: 1 }}>{form.newProfileImage.name}</Typography>
+              )}
+              <Button variant="outlined" component="label" sx={{ mt: 1, width: '100%' }}>
+                Upload New Resume
+                <input type="file" hidden accept=".pdf,.doc,.docx" onChange={handleResumeUpload} />
+              </Button>
+              {form.newResume && (
+                <Typography variant="caption" sx={{ ml: 1 }}>{form.newResume.name}</Typography>
+              )}
+            </>
+          ) : (
+            <>
+              <Typography variant="body2"><b>Email:</b> {form.email}</Typography>
+              <Typography variant="body2"><b>Phone:</b> {form.phone}</Typography>
+              <Typography variant="body2"><b>Resume:</b> {form.resume ? (
+                <a href={form.resume} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb' }}>View Resume</a>
+              ) : (
+                <span style={{ color: '#64748b' }}>Not uploaded</span>
+              )}</Typography>
+              <Typography variant="body2"><b>Bio:</b> {form.bio}</Typography>
+              <Typography variant="body2"><b>Experience:</b> {form.experience}</Typography>
+              <Box>
+                <Typography variant="body2"><b>Skills:</b></Typography>
+                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+                  {form.skills.map((skill: string, idx: number) => (
+                    <Chip key={idx} label={skill} sx={{ mb: 0.5 }} />
+                  ))}
+                </Stack>
+              </Box>
+            </>
+          )}
+        </Stack>
+        <Box sx={{ mt: 3, width: '100%' }}>
+          {edit ? (
+            <Button variant="contained" onClick={handleSave} sx={{ width: '100%' }}>Save</Button>
+          ) : (
+            <Button variant="outlined" onClick={() => setEdit(true)} sx={{ width: '100%' }}>Edit Profile</Button>
+          )}
+        </Box>
+      </Box>
+
+      {/* Right: Applied Jobs */}
+      <Box sx={{
+        ml: '340px',
+        p: 4,
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center', 
+        minHeight: '100vh'
+      }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 800, color: '#2563eb', textAlign: 'center' }}>
+          Applied Jobs
+        </Typography>
+        {appliedJobs.length === 0 ? (
+          <Typography variant="body2" sx={{ color: '#64748b', mt: 2, fontStyle: 'italic', textAlign: 'center' }}>
+            No jobs applied yet.
+          </Typography>
         ) : (
-          <Button variant="outlined" onClick={() => setEdit(true)} sx={{ width: '100%' }}>Edit Profile</Button>
+          <TableContainer component={Paper} sx={{
+            boxShadow: 2,
+            bgcolor: '#f8fafc',
+            borderRadius: 3,
+            width: '100vw', // Full width
+            maxWidth: '850px', // Optional: limit max width for large screens
+          }}>
+            <Table sx={{ width: '100%' }}>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#e0e7ff' }}>
+                  <TableCell sx={{ fontWeight: 700 }}>Job Title</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Company</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Location</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {appliedJobs.map((item, idx) => (
+                  <TableRow key={idx} sx={{ '&:hover': { bgcolor: '#eef2ff' } }}>
+                    <TableCell>{item.job?.title}</TableCell>
+                    <TableCell>{item.job?.company_name}</TableCell>
+                    <TableCell>{item.job?.location}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={
+                          item.status === 'selected'
+                            ? 'Selected'
+                            : item.status === 'rejected'
+                            ? 'Rejected'
+                            : 'Applied'
+                        }
+                        sx={{
+                          bgcolor:
+                            item.status === 'selected'
+                              ? '#22c55e'
+                              : item.status === 'rejected'
+                              ? '#e41b17'
+                              : '#2563eb',
+                          color: '#fff',
+                          fontWeight: 600,
+                          borderRadius: 1,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{
+                          textTransform: 'none',
+                          borderColor: '#2563eb',
+                          color: '#2563eb',
+                          borderRadius: 2,
+                          fontWeight: 500,
+                        }}
+                        href={`/job/${item.job?._id}`}
+                      >
+                        View Job
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
       </Box>
     </Box>
