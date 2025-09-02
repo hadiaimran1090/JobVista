@@ -4,7 +4,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import Usernavbar from '../components/usernavbar';
+import Usernavbar from '../components/Usernavbar';
 
 const FindJobs: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
@@ -84,23 +84,93 @@ const FindJobs: React.FC = () => {
 
   return (
     <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', width: '100vw', maxWidth: '100vw' }}>
-      {/* Apna Navbar yahan use karein */}
       <Usernavbar />
       {/* Search Section */}
-      <Card sx={{ mb: 2, p: 2, borderRadius: 3, boxShadow: 2, maxWidth: 900, mx: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>Find Your Dream Job</Typography>
-        <Typography variant="body2" sx={{ mb: 1, color: '#64748b' }}>Discover opportunities that match your passion</Typography>
-        <Stack direction="row" spacing={1}>
-          <TextField fullWidth placeholder="Job title, company, or keywords" variant="outlined" size="small" value={search} onChange={e => setSearch(e.target.value)} />
-          <TextField fullWidth placeholder="Location" variant="outlined" size="small" value={location} onChange={e => setLocation(e.target.value)} />
-          <Button variant="contained" sx={{ bgcolor: '#2563eb', color: '#fff', fontWeight: 600, px: 3, height: 40 }} onClick={fetchJobs}>Search</Button>
-        </Stack>
-      </Card>
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        mt: 3,
+        mb: 2,
+        width: '100%',
+      }}>
+        <Card sx={{
+          p: 3,
+          borderRadius: 4,
+          boxShadow: 2,
+          width: '90vw',
+          maxWidth: 1100,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          alignItems: 'center',
+          bgcolor: '#fff',
+        }}>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5, textAlign: 'left', width: '100%' }}>
+            Find Your Dream Job
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1, color: '#64748b', textAlign: 'left', width: '100%' }}>
+            Discover opportunities that match your passion
+          </Typography>
+          <Stack direction="row" spacing={2} sx={{ width: '100%' }}>
+            <TextField
+              fullWidth
+              placeholder="Job title, company, or keywords"
+              variant="outlined"
+              size="medium"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              sx={{ bgcolor: '#f6fbff', borderRadius: 2 }}
+            />
+            <TextField
+              fullWidth
+              placeholder="Location"
+              variant="outlined"
+              size="medium"
+              value={location}
+              onChange={e => setLocation(e.target.value)}
+              sx={{ bgcolor: '#f6fbff', borderRadius: 2 }}
+            />
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: '#2563eb',
+                color: '#fff',
+                fontWeight: 600,
+                px: 4,
+                height: 48,
+                borderRadius: 2,
+                boxShadow: 0,
+              }}
+              onClick={fetchJobs}
+            >
+              Search Jobs
+            </Button>
+          </Stack>
+        </Card>
+      </Box>
 
       {/* Filter + Jobs Section */}
-      <Box sx={{ display: 'flex', gap: 0.7, maxWidth: 1200, mx: 'auto', mt: 1 }}>
+      <Box sx={{
+        display: 'flex',
+        gap: 2,
+        maxWidth: 1200,
+        mx: 'auto',
+        mt: 2,
+        alignItems: 'flex-start',
+        width: '90vw',
+      }}>
         {/* Filter Section */}
-        <Card sx={{ minWidth: 170, maxWidth: 210, p: 2, borderRadius: 3, boxShadow: 1, bgcolor: '#fff', alignSelf: 'flex-start', height: 'fit-content' }}>
+        <Card sx={{
+          minWidth: 200,
+          maxWidth: 240,
+          p: 2,
+          borderRadius: 3,
+          boxShadow: 1,
+          bgcolor: '#fff',
+          alignSelf: 'flex-start',
+          height: 'fit-content',
+        }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, fontSize: 16 }}>Filter Jobs</Typography>
           <Button variant="text" sx={{ color: '#2563eb', mb: 1, fontWeight: 600, fontSize: 13, px: 0 }} onClick={() => { setJobType(''); setLocation(''); setSalaryMin(''); setSalaryMax(''); }}>Clear All</Button>
           <Divider sx={{ mb: 1 }} />
@@ -125,25 +195,27 @@ const FindJobs: React.FC = () => {
         </Card>
         {/* Jobs List */}
         <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Showing {jobs.length} jobs</Typography>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>Showing {jobs.length} jobs</Typography>
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' },
-            gap: 0.3,
+            gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, // 2 columns for desktop
+            gap: 2,
           }}>
             {jobs.map((job: any) => (
               <Card key={job._id || job.id} sx={{
                 borderRadius: 3,
                 boxShadow: 1,
                 bgcolor: '#fff',
-                p: 1.5,
+                p: 2,
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
-                maxWidth: 340,
+                maxWidth: 500,
                 width: '100%',
                 minHeight: 180,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'box-shadow 0.2s',
+                '&:hover': { boxShadow: 4 }
               }}
                 onClick={() => navigate(`/job/${job._id}`)}
               >
@@ -157,8 +229,8 @@ const FindJobs: React.FC = () => {
                       fontWeight: 600,
                       fontSize: 12,
                       position: 'absolute',
-                      bottom: 10,
-                      right: 10,
+                      bottom: 16,
+                      right: 16,
                       zIndex: 2
                     }}
                   />
@@ -187,7 +259,7 @@ const FindJobs: React.FC = () => {
                     }} />
                   </IconButton>
                 </Box>
-                <Stack direction="row" spacing={0.7} sx={{ mb: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
                   <Chip label={job.location} variant="outlined" sx={{ fontWeight: 500, fontSize: 12 }} />
                   <Chip label={job.job_type} sx={{ bgcolor: '#22c55e', color: '#fff', fontWeight: 500, fontSize: 12 }} />
                 </Stack>
