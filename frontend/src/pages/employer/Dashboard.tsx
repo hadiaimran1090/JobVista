@@ -32,7 +32,19 @@ const Dashboard: React.FC = () => {
       <Sidebar />
       <Box sx={{ flex: 1, minHeight: '100vh', overflowY: 'auto', overflowX: 'hidden', ml: '220px', px: 0, width: '100%', maxWidth: '100vw' }}>
         {/* Navbar */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 4, py: 2, bgcolor: '#fff', boxShadow: 1, width: '100%' }}>
+        <Box sx={{
+  position: 'sticky',
+  top: 0,
+  zIndex: 10,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  px: 4,
+  py: 2,
+  bgcolor: '#fff',
+  boxShadow: 1,
+  width: '100%',
+}}>
           <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '1.3rem' }}>Welcome back!</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Avatar alt={userName} src={userImage} sx={{ width: 32, height: 32 }} />

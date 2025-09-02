@@ -6,6 +6,7 @@ import EmployerDashboard from './pages/employer/Dashboard';
 import FindJobs from './pages/FindJobs';
 import Feedback from './pages/Feedback'; 
 import Profile from './pages/Profile';
+import PostJob from './pages/employer/PostJob';
 
 function Router() {
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/find-jobs" element={<FindJobs />} />
       <Route path="/feedback" element={<Feedback />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/post-job" element={<PostJob />} />
       {/* Add more routes here as needed */}
     </Routes>
   );

@@ -14,6 +14,7 @@ const LoginForm: React.FC = () => {
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       localStorage.setItem('user', JSON.stringify(res.data.user));
+      localStorage.setItem('token', res.data.token); // Store the token
       const user = res.data.user;
       setSnack({ open: true, message: 'Login successful!', severity: 'success' });
       setTimeout(() => {
