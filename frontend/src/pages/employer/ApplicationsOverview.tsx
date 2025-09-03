@@ -12,6 +12,7 @@ const ApplicationsOverview: React.FC = () => {
   const [rejectedApplicants, setRejectedApplicants] = useState<string[]>([]);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     fetchJob();
@@ -42,7 +43,21 @@ const ApplicationsOverview: React.FC = () => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
     // Update local state accordingly
-    if (status === 'selected') setSelectedApplicants(prev => [...prev, applicantId]);
+    if (status === 'selected') {
+      setSelectedApplicants(prev => [...prev, applicantId]);
+      // Send auto message to applicant
+      try {
+        await axios.post('http://localhost:5000/api/messages/send', {
+          sender: user._id,
+          receiver: applicantId,
+          text: 'You are selected for interview. Please be available tomorrow.'
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+    }
     if (status === 'rejected') setRejectedApplicants(prev => [...prev, applicantId]);
   };
 
