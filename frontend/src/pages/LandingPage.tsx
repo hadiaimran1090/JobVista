@@ -196,7 +196,7 @@ const LandingPage: React.FC = () => {
                 <Typography variant="body2" sx={{ color: '#64748b', mb: 1 }}>
                   {job.created_at ? job.created_at.slice(0, 10) : ''}
                 </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 700, color: '#2563eb', fontSize: 15 }}>
+                <Typography variant="body2" sx={{ fontWeight: 700, color: '#3378e7ff', fontSize: 15 }}>
                   {job.salary_min && job.salary_max ? `$${job.salary_min} - $${job.salary_max}` : ''}
                 </Typography>
               </Card>
