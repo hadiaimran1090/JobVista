@@ -15,6 +15,7 @@ import ApplicationsOverview from './pages/employer/ApplicationsOverview';
 import Messages from './pages/Messages';
 import ProfileView from './pages/ProfileView';
 import CompanyProfile from './pages/CompanyProfile';
+import EmployerMessages from './pages/employer/EmployerMessages';
 
 function Router() {
   return (
@@ -26,6 +27,7 @@ function Router() {
       <Route element={<EmployerLayout><ApplicationsOverview /></EmployerLayout>} path="/job/:jobId/applicants" />
       <Route path="/profile-view/:id" element={<ProfileView />} />
       <Route element={<EmployerLayout><CompanyProfile /></EmployerLayout>} path="/company-profile/" />
+      <Route element={<EmployerLayout><EmployerMessages /></EmployerLayout>} path="/employer/messages" />
       {/* Jobseeker and other pages (no sidebar/navbar) */}
       <Route element={<LandingPage />} path="/" />
       <Route element={<AuthPage />} path="/auth" />

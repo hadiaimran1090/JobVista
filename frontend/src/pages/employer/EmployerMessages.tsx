@@ -5,9 +5,10 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import axios from 'axios';
 import React, { useEffect, useState, useRef } from 'react';
 
-const Messages: React.FC = () => {
-  const [employers, setEmployers] = useState<any[]>([]);
-  const [selectedEmployer, setSelectedEmployer] = useState<any>(null);
+const SIDEBAR_WIDTH = 220;
+const EmployerMessages: React.FC = () => {
+  const [applicants, setApplicants] = useState<any[]>([]);
+  const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [newMsg, setNewMsg] = useState('');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -15,24 +16,24 @@ const Messages: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get(`http://localhost:5000/api/messages/employers?jobseeker=${user._id}`, {
+    axios.get(`http://localhost:5000/api/messages/applicants?employer=${user._id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
-        if (Array.isArray(res.data)) setEmployers(res.data);
-        else setEmployers([]);
+        if (Array.isArray(res.data)) setApplicants(res.data);
+        else setApplicants([]);
       })
-      .catch(() => setEmployers([]));
+      .catch(() => setApplicants([]));
   }, [user._id]);
 
   useEffect(() => {
-    if (selectedEmployer) {
-      axios.get(`http://localhost:5000/api/messages/chat?user1=${user._id}&user2=${selectedEmployer._id}`, {
+    if (selectedApplicant) {
+      axios.get(`http://localhost:5000/api/messages/chat?user1=${user._id}&user2=${selectedApplicant._id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       })
         .then(res => setMessages(Array.isArray(res.data) ? res.data : []));
     }
-  }, [selectedEmployer, user._id]);
+  }, [selectedApplicant, user._id]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -42,13 +43,13 @@ const Messages: React.FC = () => {
     if (!newMsg.trim()) return;
     await axios.post('http://localhost:5000/api/messages/send', {
       sender: user._id,
-      receiver: selectedEmployer._id,
+      receiver: selectedApplicant._id,
       text: newMsg
     }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
     setNewMsg('');
-    axios.get(`http://localhost:5000/api/messages/chat?user1=${user._id}&user2=${selectedEmployer._id}`, {
+    axios.get(`http://localhost:5000/api/messages/chat?user1=${user._id}&user2=${selectedApplicant._id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => setMessages(Array.isArray(res.data) ? res.data : []));
@@ -57,59 +58,62 @@ const Messages: React.FC = () => {
   return (
     <Box sx={{
       display: 'flex',
-      height: '90vh',
+      height: '80vh',
       bgcolor: '#eaf3fb',
       borderRadius: 3,
       boxShadow: 4,
-      width: '75vw',
-      marginLeft: '160px',
-      overflow: 'hidden'
+      width: 'calc(100vw - 220px)', // Sidebar width subtracted
+      marginLeft: `${SIDEBAR_WIDTH}px`, // Start after sidebar
+      overflow: 'hidden',
+      marginTop: '16px',
+      marginRight: '16px',
     }}>
-      {/* Employers List */}
+      {/* Applicants Sidebar */}
       <Box sx={{
-        width: 320,
-        bgcolor: '#e6ecf5ff',
+        width: SIDEBAR_WIDTH,
+        bgcolor: '#fff', // white sidebar
         p: 0,
         borderRight: '1px solid #cfd8dc',
         display: 'flex',
         flexDirection: 'column',
+        marginLeft: '16px'
       }}>
         <Typography variant="h6" sx={{
           mb: 2,
           p: 2,
-          color: '#fff',
+          color: '#222', // black text
           bgcolor: '#2563eb',
           fontWeight: 700,
           letterSpacing: 1,
           borderRadius: '0 0 18px 0'
         }}>
-          Employers
+          Applicants
         </Typography>
         <List sx={{ flex: 1, overflowY: 'auto', px: 1 }}>
-          {Array.isArray(employers) && employers.length > 0 ? employers.map(emp => (
-            <ListItem key={emp._id} disablePadding>
+          {Array.isArray(applicants) && applicants.length > 0 ? applicants.map(app => (
+            <ListItem key={app._id} disablePadding>
               <ListItemButton
-                selected={selectedEmployer?._id === emp._id}
-                onClick={() => setSelectedEmployer(emp)}
+                selected={selectedApplicant?._id === app._id}
+                onClick={() => setSelectedApplicant(app)}
                 sx={{
                   alignItems: 'flex-start',
-                  bgcolor: selectedEmployer?._id === emp._id ? '#05163a22' : 'inherit',
+                  bgcolor: selectedApplicant?._id === app._id ? '#eaf3fb' : 'inherit',
                   borderRadius: 2,
                   my: 1,
                   px: 2
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar src={emp?.profileImage || ''} />
+                  <Avatar src={app?.profileImage || ''} />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={<Typography sx={{ fontWeight: 600, color: '#0c0c0cff' }}>{emp?.name || 'No Name'}</Typography>}
-                  secondary={<Typography sx={{ color: '#0f1010ff', fontSize: 13 }}>{emp?.email || ''}</Typography>}
+                  primary={<Typography sx={{ fontWeight: 600, color: '#222' }}>{app?.name || 'No Name'}</Typography>}
+                  secondary={<Typography sx={{ color: '#555', fontSize: 13 }}>{app?.email || ''}</Typography>}
                 />
               </ListItemButton>
             </ListItem>
           )) : (
-            <Typography sx={{ px: 2, py: 1, color: '#fff' }}>No employers found.</Typography>
+            <Typography sx={{ px: 2, py: 1, color: '#222' }}>No applicants found.</Typography>
           )}
         </List>
       </Box>
@@ -133,11 +137,11 @@ const Messages: React.FC = () => {
           color: '#fff',
           borderRadius: '0 0 18px 0'
         }}>
-          {selectedEmployer ? (
+          {selectedApplicant ? (
             <>
-              <Avatar src={selectedEmployer?.profileImage || ''} sx={{ mr: 2 }} />
+              <Avatar src={selectedApplicant?.profileImage || ''} sx={{ mr: 2 }} />
               <Typography variant="h6" sx={{ fontWeight: 700, flex: 1 }}>
-                {selectedEmployer.name}
+                {selectedApplicant.name}
               </Typography>
               <Stack direction="row" spacing={1}>
                 <IconButton sx={{ color: '#fff' }}>
@@ -149,7 +153,7 @@ const Messages: React.FC = () => {
               </Stack>
             </>
           ) : (
-            <Typography variant="h6" sx={{ color: '#fff' }}>Select an employer</Typography>
+            <Typography variant="h6" sx={{ color: '#fff' }}>Select an applicant</Typography>
           )}
         </Box>
         {/* Messages */}
@@ -190,7 +194,7 @@ const Messages: React.FC = () => {
           <div ref={chatEndRef} />
         </Box>
         {/* Message Input */}
-        {selectedEmployer && (
+        {selectedApplicant && (
           <Box sx={{
             px: 4,
             py: 2,
@@ -219,4 +223,4 @@ const Messages: React.FC = () => {
   );
 };
 
-export default Messages;
+export default EmployerMessages;

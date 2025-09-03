@@ -41,6 +41,9 @@ app.use('/api/company', companyRoutes);
 const feedbackRoutes = require('./routes/feedback.routes');
 app.use('/api/feedback', feedbackRoutes);
 
+// Message routes add karein
+app.use('/api/messages', require('./routes/messages'));
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
