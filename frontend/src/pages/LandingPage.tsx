@@ -1,5 +1,9 @@
-import React from 'react';
-import { Box, Button, Card, CardContent, Typography, TextField, MenuItem, Avatar, Chip, Divider, Container, Link, Stack } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, Card, CardContent, Typography, TextField, Avatar, Chip, Divider, Container, Link, Stack, IconButton } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import axios from 'axios';
+import Rating from '@mui/material/Rating';
 
 const companies = [
   { name: 'Tech Solutions', color: '#4A154B' },
@@ -9,14 +13,47 @@ const companies = [
   { name: 'Creative Minds', color: '#00BFAE' },
 ];
 
-const jobs = [
-  { title: 'Product Sales Specialist', company: 'Tech Solutions', location: 'Remote', type: 'Full Time' },
-  { title: 'Finance Manager', company: 'Amazon', location: 'NYC', type: 'Part Time' },
-  { title: 'General Accountant', company: 'Marketify', location: 'LA', type: 'Full Time' },
-  { title: 'HR Specialist', company: 'CodeWorks', location: 'Remote', type: 'Contract' },
-];
-
 const LandingPage: React.FC = () => {
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [searchTitle, setSearchTitle] = useState('');
+  const [searchCity, setSearchCity] = useState('');
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [feedbacks, setFeedbacks] = useState<any[]>([]);
+
+  // Fetch jobs from API
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const params: any = {};
+      if (searchTitle) params.search = searchTitle;
+      if (searchCity) params.location = searchCity;
+      const res = await axios.get('http://localhost:5000/api/jobs', { params });
+      setJobs(res.data);
+      setCarouselIndex(0); // Reset carousel on search
+    };
+    fetchJobs();
+    // eslint-disable-next-line
+  }, [searchTitle, searchCity]);
+
+  // Fetch feedbacks from API
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      const res = await axios.get('http://localhost:5000/api/feedback');
+      setFeedbacks(res.data.slice(-6)); // last 6 feedbacks
+    };
+    fetchFeedbacks();
+  }, []);
+
+  // Carousel logic (4 cards at a time)
+  const visibleJobs = jobs.slice(carouselIndex, carouselIndex + 4);
+
+  const handlePrev = () => {
+    setCarouselIndex(prev => Math.max(prev - 4, 0));
+  };
+
+  const handleNext = () => {
+    setCarouselIndex(prev => Math.min(prev + 4, jobs.length - 4));
+  };
+
   return (
     <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       {/* Header */}
@@ -59,30 +96,86 @@ const LandingPage: React.FC = () => {
 
       {/* Search Bar */}
       <Box sx={{ px: 4, py: 2, bgcolor: '#fff', boxShadow: 1, borderRadius: 2, maxWidth: 600, mx: 'auto', mt: -4, mb: 4, display: 'flex', gap: 2 }}>
-        <TextField select label="Job Title" defaultValue="Product Sales Specialist" sx={{ flex: 1 }}>
-          {jobs.map((job) => (
-            <MenuItem key={job.title} value={job.title}>{job.title}</MenuItem>
-          ))}
-        </TextField>
-        <TextField label="City" defaultValue="lahore" sx={{ flex: 1 }} />
-        <Button variant="contained" sx={{ px: 4 }}>Search</Button>
+        <TextField
+          label="Job Title"
+          value={searchTitle}
+          onChange={e => setSearchTitle(e.target.value)}
+          sx={{ flex: 1 }}
+        />
+        <TextField
+          label="City"
+          value={searchCity}
+          onChange={e => setSearchCity(e.target.value)}
+          sx={{ flex: 1 }}
+        />
+        <Button
+          variant="contained"
+          sx={{ px: 4 }}
+          onClick={() => setCarouselIndex(0)}
+        >
+          Search
+        </Button>
       </Box>
 
-      {/* Featured Jobs (Moved here, just below search bar) */}
-      <Box sx={{ px: 4, py: 6, textAlign: 'center' }}>
+      {/* Featured Jobs Carousel */}
+      <Box sx={{ px: 4, py: 6, textAlign: 'center', position: 'relative' }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>Find The Job That Qualify Your Life</Typography>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} justifyContent="center" alignItems="stretch">
-          {jobs.map((job, idx) => (
-            <Card key={idx} sx={{ py: 2, flex: 1 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>{job.title}</Typography>
-                <Typography variant="body2" color="text.secondary">{job.company} - {job.location}</Typography>
-                <Chip label={job.type} sx={{ mt: 1 }} />
-              </CardContent>
-            </Card>
-          ))}
-        </Stack>
-        <Typography variant="h6" sx={{ mt: 4, color: '#38bdf8', fontWeight: 700 }}>100K+ Jobs</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+          <IconButton
+            onClick={handlePrev}
+            disabled={carouselIndex === 0}
+            sx={{ bgcolor: '#fff', boxShadow: 1, mr: 2 }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+          <Stack direction="row" spacing={3} justifyContent="center" alignItems="stretch">
+            {visibleJobs.map((job: any, idx) => (
+              <Card
+                key={job._id || idx}
+                sx={{
+                  width: 250,
+                  minHeight: 180,
+                  borderRadius: 3,
+                  boxShadow: '10px 22px 12px 0 rgba(107, 15, 138, 0.1)',
+                  bgcolor: '#fff',
+                  p: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  pointerEvents: 'none',
+                  transition: 'box-shadow 0.7s',
+                  '&:hover': { boxShadow: '0 4px 24px 0 rgba(37,99,235,0.18)' }
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                  <Avatar src={job.company_id?.logo} sx={{ width: 36, height: 36, mr: 1, bgcolor: '#e0e7ff' }}>
+                    {job.company_name?.[0]}
+                  </Avatar>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{job.company_name}</Typography>
+                </Box>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5, fontSize: 17 }}>{job.title}</Typography>
+                <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                  <Chip label={job.location} size="small" variant="outlined" />
+                  <Chip label={job.job_type} size="small" sx={{ bgcolor: '#22c55e', color: '#fff' }} />
+                </Stack>
+                <Typography variant="body2" sx={{ color: '#64748b', mb: 1 }}>
+                  {job.created_at ? job.created_at.slice(0, 10) : ''}
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700, color: '#2563eb', fontSize: 15 }}>
+                  {job.salary_min && job.salary_max ? `$${job.salary_min} - $${job.salary_max}` : ''}
+                </Typography>
+              </Card>
+            ))}
+          </Stack>
+          <IconButton
+            onClick={handleNext}
+            disabled={carouselIndex >= jobs.length - 4}
+            sx={{ bgcolor: '#fff', boxShadow: 1, ml: 2 }}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </Box>
+        <Typography variant="h6" sx={{ mt: 4, color: '#38bdf8', fontWeight: 700 }}>1000+ Jobs</Typography>
       </Box>
 
       {/* How it Works */}
@@ -132,26 +225,54 @@ const LandingPage: React.FC = () => {
         </Stack>
       </Box>
 
-      {/* Client Testimonials */}
-      <Box sx={{ px: 4, py: 6, bgcolor: '#fff', textAlign: 'center' }}>
+      {/* Client Testimonials with Arrows */}
+      <Box sx={{ px: 4, py: 6, background: 'linear-gradient(90deg, #8ed6eeff 10%, #ca93caff 70%)', textAlign: 'center', position: 'relative' }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>What Our Client Say About Us</Typography>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} justifyContent="center" alignItems="stretch">
-          <Card sx={{ py: 3, flex: 1 }}>
-            <CardContent>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                "Great platform! Helped me find my dream job quickly."
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
-                <Avatar sx={{ bgcolor: '#38bdf8' }}>A</Avatar>
-                <Box>
-                  <Typography variant="subtitle2">Ayesha</Typography>
-                  <Typography variant="caption" color="text.secondary">Software Engineer</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Stack>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+          <IconButton
+            onClick={() => setCarouselIndex(prev => Math.max(prev - 3, 0))}
+            disabled={carouselIndex === 0}
+            sx={{ bgcolor: '#fff', boxShadow: 1, mr: 2 }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+          <Stack direction="row" spacing={4} justifyContent="center" alignItems="stretch" flexWrap="nowrap">
+            {feedbacks.slice(carouselIndex, carouselIndex + 3).map(fb => (
+              <Card
+                key={fb._id}
+                sx={{
+                  width: 260,
+                  minHeight: 150,
+                  borderRadius: 3,
+                  boxShadow: '13px 41px 24px 0 rgba(230, 76, 181, 0.1)',
+                  bgcolor: '#fff',
+                  p: 2,
+                  mb: 2,
+                  animation: 'fadeIn 0.7s',
+                  '@keyframes fadeIn': {
+                    from: { opacity: 0, transform: 'scale(0.95)' },
+                    to: { opacity: 1, transform: 'scale(1)' }
+                  }
+                }}
+              >
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <Avatar src={fb.user?.profileImage} sx={{ width: 48, height: 48, mb: 1 }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{fb.user?.name}</Typography>
+                  <Typography variant="body2" sx={{ color: '#c042ceff', mb: 1 }}>{fb.user?.bio}</Typography>
+                  <Rating value={fb.rating} readOnly sx={{ mb: 1 }} />
+                  <Typography variant="body2">{fb.comment}</Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+          <IconButton
+            onClick={() => setCarouselIndex(prev => Math.min(prev + 3, feedbacks.length - 3))}
+            disabled={carouselIndex >= feedbacks.length - 3}
+            sx={{ bgcolor: '#fff', boxShadow: 1, ml: 2 }}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </Box>
       </Box>
 
       {/* Footer */}

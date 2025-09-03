@@ -37,6 +37,10 @@ app.use('/api/applicants', applicantRoutes);
 const companyRoutes = require('./routes/company.routes');
 app.use('/api/company', companyRoutes);
 
+// Feedback routes
+const feedbackRoutes = require('./routes/feedback.routes');
+app.use('/api/feedback', feedbackRoutes);
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
