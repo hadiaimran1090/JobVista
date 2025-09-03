@@ -65,7 +65,7 @@ const ApplicationsOverview: React.FC = () => {
     <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', display: 'flex', width: '100vw' }}>
       <Sidebar />
       <Box sx={{ flex: 1, minHeight: '100vh', ml: '220px', px: 4, py: 3 }}>
-        <Button variant="text" sx={{ mb: 2 }} onClick={() => navigate(-1)}>Back</Button>
+
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Applications Overview</Typography>
         {job && (
           <Card sx={{ bgcolor: '#2563eb', color: '#fff', p: 2, mb: 3 }}>
