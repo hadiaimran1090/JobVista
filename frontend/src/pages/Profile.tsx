@@ -228,7 +228,7 @@ const Profile: React.FC = () => {
                             ? 'Selected'
                             : item.status === 'rejected'
                             ? 'Rejected'
-                            : 'Applied'
+                            : 'Pending'
                         }
                         sx={{
                           bgcolor:

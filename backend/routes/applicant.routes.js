@@ -23,8 +23,9 @@ router.post('/update-status', async (req, res) => {
 // Get applied jobs for a user
 router.get('/user/:userId', async (req, res) => {
   try {
-    const applicants = await Applicant.find({ userId: req.params.userId }).populate('jobId');
-    // Format response: [{ job: {...}, status }]
+    const applicants = await Applicant.find({ userId: req.params.userId })
+      .populate('jobId');
+    // Map response to include job info
     const result = applicants.map(app => ({
       job: app.jobId,
       status: app.status

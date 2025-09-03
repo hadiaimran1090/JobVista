@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const jobController = require('../controllers/jobController');
 const auth = require('../middleware/auth');
+const Applicant = require('../models/applicant.model'); // <-- ye line add karein
+const Job = require('../models/job.model');
 
 // Create job
 router.post('/post-job', auth, jobController.createJob);
@@ -13,7 +15,26 @@ router.get('/', jobController.getJobs);
 router.get('/:id', jobController.getJobDetail);
 
 // Apply to job
-router.post('/:id/apply', auth, jobController.applyJob);
+router.post('/:id/apply', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const jobId = req.params.id;
+
+    // Check if already applied
+    let applicant = await Applicant.findOne({ userId, jobId });
+    if (!applicant) {
+      applicant = new Applicant({ userId, jobId, status: 'pending' });
+      await applicant.save();
+    }
+
+    // Update job applicants array
+    await Job.findByIdAndUpdate(jobId, { $addToSet: { applicants: userId } }); // <-- Ye line zaroori hai
+
+    res.json({ success: true, applicant });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Save job
 router.post('/:id/save', auth, jobController.saveJob);
