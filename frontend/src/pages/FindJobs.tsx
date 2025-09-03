@@ -144,7 +144,7 @@ const FindJobs: React.FC = () => {
               }}
               onClick={fetchJobs}
             >
-              Search Jobs
+              Search 
             </Button>
           </Stack>
         </Card>
@@ -236,8 +236,11 @@ const FindJobs: React.FC = () => {
                   />
                 )}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, position: 'relative' }}>
-                  <Avatar sx={{ bgcolor: '#2563eb', mr: 2, width: 44, height: 44 }}>
-                    {(job.title || '').split(' ').map((word: string) => word[0]).join('')}
+                  <Avatar
+                    sx={{ bgcolor: '#2563eb', mr: 2, width: 44, height: 44 }}
+                    src={job.company_id?.logo || undefined}
+                  >
+                    {!job.company_id?.logo && (job.title || '').split(' ').map((word: string) => word[0]).join('')}
                   </Avatar>
                   <Box>
                     <Typography variant="h6" sx={{ fontWeight: 700, color: '#2563eb', mb: 0, fontSize: 18 }}>{job.title}</Typography>

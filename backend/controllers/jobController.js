@@ -1,9 +1,17 @@
 const Job = require('../models/job.model');
+const Company = require('../models/company.model'); // Import Company model
 
 // Create job
 exports.createJob = async (req, res) => {
   try {
-    const job = new Job({ ...req.body, employer_id: req.user.id });
+    const company = await Company.findOne({ userId: req.user.id });
+    if (!company) return res.status(404).json({ error: 'Company not found' });
+    const job = new Job({
+      ...req.body,
+      employer_id: req.user.id,
+      company_id: company._id,
+      company_name: company.name
+    });
     await job.save();
     res.status(201).json(job);
   } catch (err) {
@@ -21,17 +29,17 @@ exports.getJobs = async (req, res) => {
     if (location) query.location = { $regex: location, $options: 'i' };
     if (salary_min) query.salary_min = { $gte: Number(salary_min) };
     if (salary_max) query.salary_max = { $lte: Number(salary_max) };
-    const jobs = await Job.find(query).sort({ created_at: -1 });
+    const jobs = await Job.find(query).populate('company_id'); // <-- Add populate here
     res.json(jobs);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 
 // Get job detail
 exports.getJobDetail = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.id);
+    const job = await Job.findById(req.params.id).populate('company_id');
     res.json(job);
   } catch (err) {
     res.status(404).json({ error: 'Job not found' });
