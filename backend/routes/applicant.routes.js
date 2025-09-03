@@ -14,6 +14,19 @@ router.post('/update-status', async (req, res) => {
       applicant.status = status;
     }
     await applicant.save();
+
+    // Update job model arrays
+    const job = await Job.findById(jobId);
+    if (status === 'selected') {
+      if (!job.selectedApplicants.includes(userId)) job.selectedApplicants.push(userId);
+      job.rejectedApplicants = job.rejectedApplicants.filter(id => id.toString() !== userId);
+    }
+    if (status === 'rejected') {
+      if (!job.rejectedApplicants.includes(userId)) job.rejectedApplicants.push(userId);
+      job.selectedApplicants = job.selectedApplicants.filter(id => id.toString() !== userId);
+    }
+    await job.save();
+
     res.json({ success: true, applicant });
   } catch (err) {
     res.status(500).json({ error: err.message });

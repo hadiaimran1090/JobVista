@@ -15,7 +15,9 @@ const jobSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
   company_name: { type: String, required: true },
   applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  selectedApplicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  rejectedApplicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 module.exports = mongoose.model('Job', jobSchema);
