@@ -54,6 +54,40 @@ const LandingPage: React.FC = () => {
     setCarouselIndex(prev => Math.min(prev + 4, jobs.length - 4));
   };
 
+  const fadeIn = {
+    animation: 'fadeIn 1s',
+    '@keyframes fadeIn': {
+      from: { opacity: 0, transform: 'translateY(30px)' },
+      to: { opacity: 1, transform: 'translateY(0)' }
+    }
+  };
+
+  // Add keyframes for bounce/slide animation
+  const testimonialAnim = {
+    animation: 'testimonialBounce 2s infinite',
+    '@keyframes testimonialBounce': {
+      '0%': { transform: 'translateY(0)' },
+      '20%': { transform: 'translateY(-12px)' },
+      '40%': { transform: 'translateY(0)' },
+      '100%': { transform: 'translateY(0)' },
+    },
+    transition: 'transform 0.3s',
+    '&:hover': {
+      animationPlayState: 'paused',
+      boxShadow: '0 4px 24px 0 rgba(37,99,235,0.18)',
+      transform: 'scale(1.05)',
+    },
+  };
+
+  const howItWorksCardAnim = {
+    transition: 'transform 0.4s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.3s',
+    '&:hover': {
+      transform: 'scale(1.07) rotate(-2deg)',
+      boxShadow: '0 8px 32px 0 rgba(56,189,248,0.18)',
+      zIndex: 1,
+    },
+  };
+
   return (
     <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       {/* Header */}
@@ -69,7 +103,7 @@ const LandingPage: React.FC = () => {
       </Box>
 
       {/* Hero Section */}
-      <Box sx={{ px: 4, py: 6, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 6 }}>
+      <Box sx={{ px: 4, py: 6, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 6, ...fadeIn }}>
         <Box sx={{ flex: 1 }}>
           <Typography variant="h3" sx={{ fontWeight: 700, mb: 2, color: '#1e293b' }}>
             Find a Job With Your Interests and Abilities
@@ -118,13 +152,13 @@ const LandingPage: React.FC = () => {
       </Box>
 
       {/* Featured Jobs Carousel */}
-      <Box sx={{ px: 4, py: 6, textAlign: 'center', position: 'relative' }}>
+      <Box sx={{ px: 4, py: 6, textAlign: 'center', position: 'relative', ...fadeIn }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>Find The Job That Qualify Your Life</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
           <IconButton
             onClick={handlePrev}
             disabled={carouselIndex === 0}
-            sx={{ bgcolor: '#fff', boxShadow: 1, mr: 2 }}
+            sx={{ bgcolor: '#dce9ecff', boxShadow: 1, mr: 2 }}
           >
             <ArrowBackIosIcon />
           </IconButton>
@@ -136,15 +170,16 @@ const LandingPage: React.FC = () => {
                   width: 250,
                   minHeight: 180,
                   borderRadius: 3,
-                  boxShadow: '10px 22px 12px 0 rgba(107, 15, 138, 0.1)',
+                  boxShadow: '10px 22px 12px 0 rgba(96, 102, 224, 0.1)',
                   bgcolor: '#fff',
                   p: 2,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'flex-start',
                   pointerEvents: 'none',
-                  transition: 'box-shadow 0.7s',
-                  '&:hover': { boxShadow: '0 4px 24px 0 rgba(37,99,235,0.18)' }
+                  transition: 'transform 0.3s, box-shadow 0.7s',
+                  '&:hover': { boxShadow: '0 4px 24px 0 rgba(37,99,235,0.18)', transform: 'scale(1.05)' },
+                  ...fadeIn
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -179,24 +214,24 @@ const LandingPage: React.FC = () => {
       </Box>
 
       {/* How it Works */}
-      <Box sx={{ px: 4, py: 6, textAlign: 'center' }}>
+      <Box sx={{ px: 4, py: 6, textAlign: 'center', ...fadeIn }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>How it Work</Typography>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} justifyContent="center" alignItems="stretch">
-          <Card sx={{ py: 3, flex: 1 }}>
+          <Card sx={{ py: 3, flex: 1, ...howItWorksCardAnim }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: '#38bdf8', fontWeight: 700 }}>Step 1</Typography>
               <Typography>Register Account</Typography>
               <Typography variant="body2" color="text.secondary">Create your free account to get started.</Typography>
             </CardContent>
           </Card>
-          <Card sx={{ py: 3, flex: 1 }}>
+          <Card sx={{ py: 3, flex: 1, ...howItWorksCardAnim }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: '#38bdf8', fontWeight: 700 }}>Step 2</Typography>
               <Typography>Find Job</Typography>
               <Typography variant="body2" color="text.secondary">Browse jobs and find your match.</Typography>
             </CardContent>
           </Card>
-          <Card sx={{ py: 3, flex: 1 }}>
+          <Card sx={{ py: 3, flex: 1, ...howItWorksCardAnim }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: '#38bdf8', fontWeight: 700 }}>Step 3</Typography>
               <Typography>Apply Job</Typography>
@@ -207,18 +242,18 @@ const LandingPage: React.FC = () => {
       </Box>
 
       {/* Why You Contact Us */}
-      <Box sx={{ px: 4, py: 6, bgcolor: '#fff', textAlign: 'center' }}>
+      <Box sx={{ px: 4, py: 6, bgcolor: '#fff', textAlign: 'center', ...fadeIn }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>Why You Contact Us</Typography>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} justifyContent="center" alignItems="stretch">
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ border: '2px solid #eee', borderRadius: 2, p: 2, flex: 1 }}>
             <Typography variant="h6" sx={{ color: '#38bdf8', fontWeight: 700 }}>Over 120+</Typography>
             <Typography variant="body2">Companies hiring</Typography>
           </Box>
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ border: '2px solid #eee', borderRadius: 2, p: 2, flex: 1 }}>
             <Typography variant="h6" sx={{ color: '#38bdf8', fontWeight: 700 }}>Over 13k+</Typography>
             <Typography variant="body2">Active jobs</Typography>
           </Box>
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ border: '2px solid #eee', borderRadius: 2, p: 2, flex: 1 }}>
             <Typography variant="h6" sx={{ color: '#38bdf8', fontWeight: 700 }}>Over 10k+</Typography>
             <Typography variant="body2">Successful placements</Typography>
           </Box>
@@ -226,7 +261,7 @@ const LandingPage: React.FC = () => {
       </Box>
 
       {/* Client Testimonials with Arrows */}
-      <Box sx={{ px: 4, py: 6, background: 'linear-gradient(90deg, #8ed6eeff 10%, #ca93caff 70%)', textAlign: 'center', position: 'relative' }}>
+      <Box sx={{ px: 4, py: 6, background: 'linear-gradient(90deg, #8ed6eeff 10%, #8fb4c3ff 70%)', textAlign: 'center', position: 'relative', ...fadeIn }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>What Our Client Say About Us</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
           <IconButton
@@ -248,11 +283,7 @@ const LandingPage: React.FC = () => {
                   bgcolor: '#fff',
                   p: 2,
                   mb: 2,
-                  animation: 'fadeIn 0.7s',
-                  '@keyframes fadeIn': {
-                    from: { opacity: 0, transform: 'scale(0.95)' },
-                    to: { opacity: 1, transform: 'scale(1)' }
-                  }
+                  ...testimonialAnim, 
                 }}
               >
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

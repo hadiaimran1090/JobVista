@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Rating, Snackbar } from '@mui/material';
+import { Box, Typography, TextField, Button, Rating, Snackbar, Paper, Slide } from '@mui/material';
 import axios from 'axios';
 
 const Feedback: React.FC = () => {
@@ -28,7 +28,6 @@ const Feedback: React.FC = () => {
       alignItems: 'center',
       justifyContent: 'center',
       width: '100vw'
-        
     }}>
       <Box sx={{
         bgcolor: '#e3ecf7',
@@ -96,9 +95,25 @@ const Feedback: React.FC = () => {
         open={open}
         autoHideDuration={2500}
         onClose={() => setOpen(false)}
-        message="Your feedback submitted!"
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      />
+        TransitionComponent={Slide}
+        ContentProps={{ sx: { p: 0 } }}
+      >
+        <Paper elevation={6} sx={{
+          px: 3, py: 2,
+          bgcolor: '#355a8c',
+          color: '#fff',
+          borderRadius: 2,
+          display: 'flex',
+          alignItems: 'center',
+          fontWeight: 600,
+          fontSize: 17,
+          boxShadow: 3,
+          gap: 1
+        }}>
+          🎉 Your feedback submitted!
+        </Paper>
+      </Snackbar>
     </Box>
   );
 };
