@@ -14,6 +14,7 @@ import JobManagement from './pages/employer/JobManagement';
 import ApplicationsOverview from './pages/employer/ApplicationsOverview';
 import Messages from './pages/Messages';
 import ProfileView from './pages/ProfileView';
+import CompanyProfile from './pages/CompanyProfile';
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route element={<EmployerLayout><JobManagement /></EmployerLayout>} path="/manage-jobs" />
       <Route element={<EmployerLayout><ApplicationsOverview /></EmployerLayout>} path="/job/:jobId/applicants" />
       <Route path="/profile-view/:id" element={<ProfileView />} />
+      <Route element={<EmployerLayout><CompanyProfile /></EmployerLayout>} path="/company-profile/" />
       {/* Jobseeker and other pages (no sidebar/navbar) */}
       <Route element={<LandingPage />} path="/" />
       <Route element={<AuthPage />} path="/auth" />
@@ -33,6 +35,7 @@ function Router() {
       <Route element={<Feedback />} path="/feedback" />
       <Route element={<Profile />} path="/profile" />
       <Route path="/messages" element={<Messages />} />
+     
       {/* Add more routes as needed */}
     </Routes>
   );
