@@ -81,7 +81,7 @@ const EmployerMessages: React.FC = () => {
         <Typography variant="h6" sx={{
           mb: 2,
           p: 2,
-          color: '#222', // black text
+          color: '#fcf6f6ff', // black text
           bgcolor: '#2563eb',
           fontWeight: 700,
           letterSpacing: 1,
