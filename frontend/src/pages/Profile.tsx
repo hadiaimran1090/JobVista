@@ -25,7 +25,8 @@ const Profile: React.FC = () => {
     const fetchAppliedJobs = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/applicants/user/${user._id}`);
-        setAppliedJobs(res.data); // [{job: {...}, status: 'accepted'|'rejected'|'pending'}]
+        // Filter out jobs that are deleted (job is null or undefined)
+        setAppliedJobs(res.data.filter((item: any) => item.job));
       } catch (err) {
         setAppliedJobs([]);
       }
