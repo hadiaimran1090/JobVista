@@ -144,8 +144,6 @@ exports.findJobsByEmployer = async (req, res) => {
         return user ? user : null;
       }).filter(Boolean)
     }));
-
-    console.log('jobsWithDetails:', JSON.stringify(jobsWithDetails, null, 2)); // <-- Add this line
     res.json(jobsWithDetails);
   } catch (err) {
     res.status(500).json({ error: err.message });
