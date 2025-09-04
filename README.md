@@ -11,7 +11,7 @@
 **JobVista** is a modern job portal that connects employers and jobseekers on a single platform.  
 It offers job posting, application management, company profiles, and much more — making job search and hiring easy and efficient.
 
-Built with ❤️ and dedication, JobVista brings together powerful features like:
+Built with dedication, JobVista brings together powerful features like:
 - Job Posting & Management
 - Employer Dashboard
 - Job Search & Filters
@@ -101,7 +101,7 @@ Built with ❤️ and dedication, JobVista brings together powerful features lik
 
 ## 🎬 Demo
 
-[![App Demo](frontend/public/screenshot-for-readme.png)](https://drive.google.com/file/d/1T155QO2CZgp0AXMmRbaVdVTrDbxUEeDB/view?usp=sharing)
+[![App Demo](frontend/public/jobvista.png)](https://drive.google.com/file/d/1T155QO2CZgp0AXMmRbaVdVTrDbxUEeDB/view?usp=sharing)
 
 ---
 
