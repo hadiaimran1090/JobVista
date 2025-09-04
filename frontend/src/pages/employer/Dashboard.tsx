@@ -106,7 +106,7 @@ const Dashboard: React.FC = () => {
           selected: allSelected.length,
         }));
 
-        setRecentApplicants(allApplicants.slice(-4).reverse());
+        setRecentApplicants(allApplicants.slice(-3).reverse());
         setSelectedCandidates(allSelected);
       })
       .catch(err => {

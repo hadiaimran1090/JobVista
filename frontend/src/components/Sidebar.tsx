@@ -1,6 +1,12 @@
 import React from 'react';
 import { Box, Typography, Stack, Button, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import WorkIcon from '@mui/icons-material/Work';
+import BusinessIcon from '@mui/icons-material/Business';
+import MessageIcon from '@mui/icons-material/Message';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -30,9 +36,17 @@ const Sidebar: React.FC = () => {
     }}>
       <Typography variant="h5" sx={{ fontWeight: 700, color: '#fff', letterSpacing: 1, mb: 5 }}>JobVista</Typography>
       <Stack spacing={2} sx={{ width: '100%' }}>
-        <Button variant="contained" sx={{ bgcolor: '#2563eb', color: '#fff', boxShadow: 2, fontWeight: 600 }} onClick={() => navigate('/employer/dashboard')}>DASHBOARD</Button>
+        <Button
+          variant="contained"
+          startIcon={<DashboardIcon />}
+          sx={{ bgcolor: '#2563eb', color: '#fff', boxShadow: 2, fontWeight: 600 }}
+          onClick={() => navigate('/employer/dashboard')}
+        >
+          DASHBOARD
+        </Button>
         <Button
           variant="text"
+          startIcon={<PostAddIcon />}
           sx={{ color: '#fff', fontWeight: 500 }}
           onClick={() => navigate('/post-job')}
         >
@@ -40,6 +54,7 @@ const Sidebar: React.FC = () => {
         </Button>
         <Button
           variant="text"
+          startIcon={<WorkIcon />}
           sx={{ color: '#fff', fontWeight: 500 }}
           onClick={() => navigate('/manage-jobs')}
         >
@@ -47,6 +62,7 @@ const Sidebar: React.FC = () => {
         </Button>
         <Button
           variant="text"
+          startIcon={<BusinessIcon />}
           sx={{ color: '#fff', fontWeight: 500 }}
           onClick={() => navigate('/company-profile')}
         >
@@ -54,6 +70,7 @@ const Sidebar: React.FC = () => {
         </Button>
         <Button
           variant="text"
+          startIcon={<MessageIcon />}
           sx={{ color: '#fff', fontWeight: 500 }}
           onClick={() => navigate('/employer/messages')}
         >
@@ -64,6 +81,7 @@ const Sidebar: React.FC = () => {
       <Button
         variant="outlined"
         color="error"
+        startIcon={<LogoutIcon />}
         sx={{ mt: 'auto', width: '100%', fontWeight: 600, bgcolor: '#fff', color: '#e41b17', borderColor: '#e41b17', '&:hover': { bgcolor: '#e41b17', color: '#fff' } }}
         onClick={handleLogout}
       >
