@@ -4,6 +4,15 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import axios from 'axios';
 import Rating from '@mui/material/Rating';
+import Star from '@mui/icons-material/Star';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import CloseIcon from '@mui/icons-material/Close';
 
 const companies = [
   { name: 'Tech Solutions', color: '#4A154B' },
@@ -19,6 +28,8 @@ const LandingPage: React.FC = () => {
   const [searchCity, setSearchCity] = useState('');
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
 
   // Fetch jobs from API
   useEffect(() => {
@@ -43,6 +54,17 @@ const LandingPage: React.FC = () => {
     fetchFeedbacks();
   }, []);
 
+  // Auto-slide effect for testimonials
+  useEffect(() => {
+    if (feedbacks.length <= 3) return;
+    const interval = setInterval(() => {
+      setTestimonialIndex(prev =>
+        prev >= feedbacks.length - 3 ? 0 : prev + 1
+      );
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [feedbacks.length]);
+
   // Carousel logic (4 cards at a time)
   const visibleJobs = jobs.slice(carouselIndex, carouselIndex + 4);
 
@@ -54,6 +76,17 @@ const LandingPage: React.FC = () => {
     setCarouselIndex(prev => Math.min(prev + 4, jobs.length - 4));
   };
 
+  const handleTestimonialPrev = () => {
+    setTestimonialIndex(prev =>
+      prev <= 0 ? feedbacks.length - 3 : prev - 1
+    );
+  };
+  const handleTestimonialNext = () => {
+    setTestimonialIndex(prev =>
+      prev >= feedbacks.length - 3 ? 0 : prev + 1
+    );
+  };
+
   const fadeIn = {
     animation: 'fadeIn 1s',
     '@keyframes fadeIn': {
@@ -62,7 +95,7 @@ const LandingPage: React.FC = () => {
     }
   };
 
-  // Add keyframes for bounce/slide animation
+  // Animation for testimonials (continuous bounce, pause on hover)
   const testimonialAnim = {
     animation: 'testimonialBounce 2s infinite',
     '@keyframes testimonialBounce': {
@@ -89,7 +122,7 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+    <Box sx={{ bgcolor: '#f6fbff', minHeight: '100vh', fontFamily: 'sans-serif', overflowX: 'hidden' ,width: '100vw'}}>
       {/* Header */}
       <Box sx={{ px: 4, py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#fff', boxShadow: 1 }}>
         <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e293b' }}>JobVista</Typography>
@@ -167,28 +200,30 @@ const LandingPage: React.FC = () => {
               <Card
                 key={job._id || idx}
                 sx={{
-                  width: 250,
-                  minHeight: 180,
-                  borderRadius: 3,
-                  boxShadow: '10px 22px 12px 0 rgba(96, 102, 224, 0.1)',
+                  width: 270,
+                  minHeight: 260,
+                  borderRadius: 4,
+                  boxShadow: '0 8px 32px 0 rgba(56,189,248,0.10)',
                   bgcolor: '#fff',
                   p: 2,
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  pointerEvents: 'none',
+                  alignItems: 'center',
+                  position: 'relative',
                   transition: 'transform 0.3s, box-shadow 0.7s',
-                  '&:hover': { boxShadow: '0 4px 24px 0 rgba(37,99,235,0.18)', transform: 'scale(1.05)' },
+                  '&:hover': { boxShadow: '0 8px 32px 0 rgba(56,189,248,0.18)', transform: 'scale(1.05)' },
                   ...fadeIn
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <Avatar src={job.company_id?.logo} sx={{ width: 36, height: 36, mr: 1, bgcolor: '#e0e7ff' }}>
-                    {job.company_name?.[0]}
-                  </Avatar>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{job.company_name}</Typography>
-                </Box>
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5, fontSize: 17 }}>{job.title}</Typography>
+                <Avatar src={job.company_id?.logo} sx={{ width: 48, height: 48, bgcolor: '#e0e7ff', mb: 1 }}>
+                  {job.company_name?.[0]}
+                </Avatar>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#3378e7ff', mb: 0.5 }}>
+                  {job.company_name}
+                </Typography>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, fontSize: 18, color: '#1e293b' }}>
+                  {job.title}
+                </Typography>
                 <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
                   <Chip label={job.location} size="small" variant="outlined" />
                   <Chip label={job.job_type} size="small" sx={{ bgcolor: '#22c55e', color: '#fff' }} />
@@ -196,9 +231,18 @@ const LandingPage: React.FC = () => {
                 <Typography variant="body2" sx={{ color: '#64748b', mb: 1 }}>
                   {job.created_at ? job.created_at.slice(0, 10) : ''}
                 </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 700, color: '#3378e7ff', fontSize: 15 }}>
+                <Typography variant="body2" sx={{ fontWeight: 700, color: '#38bdf8', fontSize: 16 }}>
                   {job.salary_min && job.salary_max ? `$${job.salary_min} - $${job.salary_max}` : ''}
                 </Typography>
+                <Divider sx={{ my: 1, width: '80%' }} />
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ mt: 1, bgcolor: '#5353ccff', color: '#fff', borderRadius: 2 }}
+                  onClick={() => setOpenDialog(true)}
+                >
+                  Apply Now
+                </Button>
               </Card>
             ))}
           </Stack>
@@ -212,6 +256,30 @@ const LandingPage: React.FC = () => {
         </Box>
         <Typography variant="h6" sx={{ mt: 4, color: '#38bdf8', fontWeight: 700 }}>1000+ Jobs</Typography>
       </Box>
+
+      {/* Apply Now Dialog */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
+          Apply for Job
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenDialog(false)}
+            sx={{ ml: 2 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ py: 2 }}>
+            Please login or create your account to apply for jobs.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Link href="/auth">
+            <Button variant="contained">Login / Register</Button>
+          </Link>
+        </DialogActions>
+      </Dialog>
 
       {/* How it Works */}
       <Box sx={{ px: 4, py: 6, textAlign: 'center', ...fadeIn }}>
@@ -260,46 +328,127 @@ const LandingPage: React.FC = () => {
         </Stack>
       </Box>
 
-      {/* Client Testimonials with Arrows */}
-      <Box sx={{ px: 4, py: 6, background: 'linear-gradient(90deg, #8ed6eeff 10%, #8fb4c3ff 70%)', textAlign: 'center', position: 'relative', ...fadeIn }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>What Our Client Say About Us</Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+      {/* Client Testimonials Slider Section */}
+      <Box sx={{
+        px: 4,
+        py: 6,
+        bgcolor: 'linear-gradient(135deg, #86c4f6 0%, #38bdf8 100%)',
+        textAlign: 'center',
+        position: 'relative',
+        ...fadeIn
+      }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#fff' }}>What Our Users Say</Typography>
+        <Box sx={{ position: 'relative', maxWidth: 1100, mx: 'auto', overflow: 'hidden' }}>
           <IconButton
-            onClick={() => setCarouselIndex(prev => Math.max(prev - 3, 0))}
-            disabled={carouselIndex === 0}
-            sx={{ bgcolor: '#fff', boxShadow: 1, mr: 2 }}
+            onClick={handleTestimonialPrev}
+            sx={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 2, bgcolor: '#fff', boxShadow: 1 }}
+            disabled={feedbacks.length <= 3}
           >
             <ArrowBackIosIcon />
           </IconButton>
-          <Stack direction="row" spacing={4} justifyContent="center" alignItems="stretch" flexWrap="nowrap">
-            {feedbacks.slice(carouselIndex, carouselIndex + 3).map(fb => (
-              <Card
-                key={fb._id}
-                sx={{
-                  width: 260,
-                  minHeight: 150,
-                  borderRadius: 3,
-                  boxShadow: '13px 41px 24px 0 rgba(230, 76, 181, 0.1)',
-                  bgcolor: '#fff',
-                  p: 2,
-                  mb: 2,
-                  ...testimonialAnim, 
-                }}
-              >
-                <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Avatar src={fb.user?.profileImage} sx={{ width: 48, height: 48, mb: 1 }} />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{fb.user?.name}</Typography>
-                  <Typography variant="body2" sx={{ color: '#c042ceff', mb: 1 }}>{fb.user?.bio}</Typography>
-                  <Rating value={fb.rating} readOnly sx={{ mb: 1 }} />
-                  <Typography variant="body2">{fb.comment}</Typography>
-                </CardContent>
-              </Card>
-            ))}
-          </Stack>
+          <Box
+            sx={{
+              display: 'flex',
+              transition: 'transform 0.7s cubic-bezier(.68,-0.55,.27,1.55)',
+              transform: `translateX(-${testimonialIndex * 370}px)`,
+              gap: 4,
+              minHeight: 320,
+            }}
+          >
+            {feedbacks.map((fb, i) => {
+              const colors = ['#ca3ef4ff', '#5255f9ff', '#38bdf8'];
+              const cardColor = colors[i % colors.length];
+              return (
+                <Card
+                  key={fb._id || i}
+                  sx={{
+                    minWidth: 350,
+                    maxWidth: 350,
+                    mx: 'auto',
+                    borderRadius: 4,
+                    boxShadow: '0 8px 32px 0 rgba(56,189,248,0.12)',
+                    bgcolor: '#fff',
+                    position: 'relative',
+                    p: 0,
+                    mb: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                    animation: 'testimonialBounce 2s infinite',
+                    transition: 'transform 0.3s',
+                    '&:hover': {
+                      animationPlayState: 'paused',
+                      boxShadow: '0 4px 24px 0 rgba(37,99,235,0.18)',
+                      transform: 'scale(1.05)',
+                    },
+                    '@keyframes testimonialBounce': {
+                      '0%': { transform: 'translateY(0)' },
+                      '20%': { transform: 'translateY(-12px)' },
+                      '40%': { transform: 'translateY(0)' },
+                      '100%': { transform: 'translateY(0)' },
+                    },
+                  }}
+                >
+                  <Box sx={{ px: 3, pt: 4, pb: 2 }}>
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <text x="2" y="20" fontSize="32" fill={cardColor} fontWeight="bold">“</text>
+                    </svg>
+                    <Typography variant="body2" sx={{ color: '#64748b', fontStyle: 'italic', textAlign: 'center', mb: 2 }}>
+                      "{fb.comment}"
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mt: 0.5,  marginBottom: '7px'}}>
+                      <Rating
+                        name="read-only"
+                        value={fb.rating || 5}
+                      />
+                    </Box>
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: 80,
+                      bgcolor: cardColor,
+                      borderTopLeftRadius: 40,
+                      borderTopRightRadius: 40,
+                      mt: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative',
+                    }}
+                  >
+                    <Avatar
+                      src={fb.user?.profileImage || '/default-user.png'}
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        border: '3px solid #fff',
+                        position: 'absolute',
+                        top: -32,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                        marginTop: '2px',
+                      }}
+                    />
+                    <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 700, mt: 5 }}>
+                      {fb.user?.name || "Anonymous"}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#f0f9ff', fontSize: 12 }}>
+                      {fb.user?.bio || "No Bio Info"}
+                    </Typography>
+            
+                  </Box>
+                </Card>
+              );
+            })}
+          </Box>
           <IconButton
-            onClick={() => setCarouselIndex(prev => Math.min(prev + 3, feedbacks.length - 3))}
-            disabled={carouselIndex >= feedbacks.length - 3}
-            sx={{ bgcolor: '#fff', boxShadow: 1, ml: 2 }}
+            onClick={handleTestimonialNext}
+            sx={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 2, bgcolor: '#fff', boxShadow: 1 }}
+            disabled={feedbacks.length <= 3}
           >
             <ArrowForwardIosIcon />
           </IconButton>
@@ -315,7 +464,6 @@ const LandingPage: React.FC = () => {
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 The platform for finding and posting jobs. Grow your career or hire top talent easily.
               </Typography>
-    
             </Box>
             <Box>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Contact</Typography>
@@ -325,9 +473,9 @@ const LandingPage: React.FC = () => {
             <Box>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Follow Us</Typography>
               <Stack direction="row" spacing={2}>
-                <Link href="#" color="inherit">Facebook</Link>
-                <Link href="#" color="inherit">LinkedIn</Link>
-                <Link href="#" color="inherit">Twitter</Link>
+                <Link href="#" color="inherit"><FacebookIcon /></Link>
+                <Link href="#" color="inherit"><LinkedInIcon /></Link>
+                <Link href="#" color="inherit"><TwitterIcon /></Link>
               </Stack>
             </Box>
           </Stack>
