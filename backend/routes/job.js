@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 const jobController = require('../controllers/jobController');
 const auth = require('../middleware/auth');
-const Applicant = require('../models/applicant.model'); // <-- ye line add karein
+const Applicant = require('../models/applicant.model'); 
 const Job = require('../models/job.model');
+const User = require('../models/user.model');
+
 
 // Create job
 router.post('/post-job', auth, jobController.createJob);
 
 // Get all jobs (with filters/search)
-router.get('/', jobController.getJobs);
-
+// router.get('/', jobController.getJobs); 
 // Get job detail
 router.get('/:id', jobController.getJobDetail);
 
@@ -48,4 +49,12 @@ router.put('/:id', auth, jobController.updateJob);
 // Delete job
 router.delete('/:id', auth, jobController.deleteJob);
 
+// Employer jobs (dashboard)
+// router.get('/employer', jobController.findJobsByEmployer); //
+  router.get('/', (req, res, next) => {
+  if (req.query.employer) {
+    return jobController.findJobsByEmployer(req, res, next);
+  }
+  return jobController.getJobs(req, res, next);
+});
 module.exports = router;

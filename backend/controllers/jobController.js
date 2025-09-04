@@ -1,5 +1,8 @@
 const Job = require('../models/job.model');
 const Company = require('../models/company.model'); // Import Company model
+const Applicant = require('../models/applicant.model');
+const User = require('../models/user.model');
+
 
 // Create job
 exports.createJob = async (req, res) => {
@@ -53,6 +56,14 @@ exports.applyJob = async (req, res) => {
     if (!job.applicants) job.applicants = [];
     if (!job.applicants.includes(req.user.id)) job.applicants.push(req.user.id);
     await job.save();
+
+    // Add this block for Applicant model entry
+    let applicant = await Applicant.findOne({ userId: req.user.id, jobId: job._id });
+    if (!applicant) {
+      applicant = new Applicant({ userId: req.user.id, jobId: job._id, status: 'pending' });
+      await applicant.save();
+    }
+
     res.json({ success: true });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -102,5 +113,41 @@ exports.deleteJob = async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+// Find jobs by employer and populate applicants and selectedApplicants
+exports.findJobsByEmployer = async (req, res) => {
+  try {
+    const jobs = await Job.find({ employer_id: req.query.employer });
+    let applicantIds = [];
+    let selectedIds = [];
+    jobs.forEach(job => {
+      applicantIds.push(...(job.applicants || []));
+      selectedIds.push(...(job.selectedApplicants || []));
+    });
+
+    applicantIds = [...new Set(applicantIds.map(id => id.toString()))];
+    selectedIds = [...new Set(selectedIds.map(id => id.toString()))];
+
+    const applicantsInfo = await User.find({ _id: { $in: applicantIds } });
+    const selectedInfo = await User.find({ _id: { $in: selectedIds } });
+
+    const jobsWithDetails = jobs.map(job => ({
+      ...job.toObject(),
+      applicants: (job.applicants || []).map(id => {
+        const user = applicantsInfo.find(u => u._id.toString() === id.toString());
+        return user ? user : null;
+      }).filter(Boolean),
+      selectedApplicants: (job.selectedApplicants || []).map(id => {
+        const user = selectedInfo.find(u => u._id.toString() === id.toString());
+        return user ? user : null;
+      }).filter(Boolean)
+    }));
+
+    console.log('jobsWithDetails:', JSON.stringify(jobsWithDetails, null, 2)); // <-- Add this line
+    res.json(jobsWithDetails);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
