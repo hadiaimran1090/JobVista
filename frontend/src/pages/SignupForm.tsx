@@ -111,11 +111,23 @@ const SignupForm: React.FC = () => {
         Upload Profile Image
         <input type="file" hidden accept="image/*" onChange={e => setProfileImageFile(e.target.files?.[0] || null)} />
       </Button>
+      {profileImageFile && (
+        <Box sx={{ fontSize: 13, color: '#2563eb', mb: 1 }}>
+          {profileImageFile.name}
+        </Box>
+      )}
       {role === 'jobseeker' && (
-        <Button variant="outlined" component="label" sx={{ fontSize: 13, py: 0.5 }}>
-          Upload Resume
-          <input type="file" hidden accept=".pdf,.doc,.docx" onChange={e => setResumeFile(e.target.files?.[0] || null)} />
-        </Button>
+        <>
+          <Button variant="outlined" component="label" sx={{ fontSize: 13, py: 0.5 }}>
+            Upload Resume
+            <input type="file" hidden accept=".pdf,.doc,.docx" onChange={e => setResumeFile(e.target.files?.[0] || null)} />
+          </Button>
+          {resumeFile && (
+            <Box sx={{ fontSize: 13, color: '#2563eb', mb: 1 }}>
+              {resumeFile.name}
+            </Box>
+          )}
+        </>
       )}
       {role === 'employer' && (
         <TextField
