@@ -61,13 +61,13 @@ const Messages: React.FC = () => {
       bgcolor: '#eaf3fb',
       borderRadius: 3,
       boxShadow: 4,
-      width: '75vw',
+      width: '100vw',
       marginLeft: '160px',
       overflow: 'hidden'
     }}>
       {/* Employers List */}
       <Box sx={{
-        width: 320,
+        width: 370,
         bgcolor: '#e6ecf5ff',
         p: 0,
         borderRight: '1px solid #cfd8dc',
@@ -182,6 +182,14 @@ const Messages: React.FC = () => {
                 fontSize: 16
               }}>
                 <Typography sx={{ wordBreak: 'break-word' }}>{msg.text}</Typography>
+                <Typography variant="caption" sx={{
+        display: 'block',
+        mt: 0.5,
+        color: msg.sender === user._id ? '#e0e7ff' : '#888',
+        textAlign: 'right'
+      }}>
+        {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+      </Typography>
               </Card>
             </Box>
           )) : (

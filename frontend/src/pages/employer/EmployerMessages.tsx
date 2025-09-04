@@ -186,6 +186,14 @@ const EmployerMessages: React.FC = () => {
                 fontSize: 16
               }}>
                 <Typography sx={{ wordBreak: 'break-word' }}>{msg.text}</Typography>
+                <Typography variant="caption" sx={{
+        display: 'block',
+        mt: 0.5,
+        color: msg.sender === user._id ? '#e0e7ff' : '#888',
+        textAlign: 'right'
+      }}>
+        {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+      </Typography>
               </Card>
             </Box>
           )) : (
