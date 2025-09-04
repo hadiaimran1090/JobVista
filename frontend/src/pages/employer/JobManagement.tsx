@@ -26,7 +26,10 @@ const JobManagement: React.FC = () => {
   }, []);
 
   const fetchJobs = async () => {
-    const res = await axios.get('http://localhost:5000/api/jobs');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const employerId = user?._id;
+    if (!employerId) return;
+    const res = await axios.get(`http://localhost:5000/api/jobs?employer=${employerId}`);
     setJobs(res.data);
   };
 
