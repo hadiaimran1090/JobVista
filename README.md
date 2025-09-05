@@ -101,7 +101,7 @@ Built with dedication, JobVista brings together powerful features like:
 
 ## 🎬 Demo
 
-[![App Demo](frontend/public/jobvista.png)]
+[![App Demo](frontend/public/jobvista.png)](https://drive.google.com/open?id=1W8hGkFQwZR6I5oNW-M3BevFS0tvHYxtG&usp=drive_fs)
 ---
 
 ## 🌟 Support & Contribution
