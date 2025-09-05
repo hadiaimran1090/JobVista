@@ -44,6 +44,17 @@ const PostJob: React.FC = () => {
       );
       setPopupError('');
       setPopupOpen(true);
+      // Clear form after success
+      setForm({
+        company_name: '',
+        title: '',
+        requirements: '',
+        details: '',
+        location: '',
+        job_type: '',
+        salary_min: '',
+        salary_max: '',
+      });
     } catch (error: any) {
       setPopupError(error.response ? error.response.data.message : error.message);
       setPopupOpen(true);
