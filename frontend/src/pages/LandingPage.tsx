@@ -337,7 +337,7 @@ const LandingPage: React.FC = () => {
         position: 'relative',
         ...fadeIn
       }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#fff' }}>What Our Users Say</Typography>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#0f0e0eff' }}>What Our Users Say</Typography>
         <Box sx={{ position: 'relative', maxWidth: 1100, mx: 'auto', overflow: 'hidden' }}>
           <IconButton
             onClick={handleTestimonialPrev}
